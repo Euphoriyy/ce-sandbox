@@ -1,14 +1,11 @@
 #include <stdint.h>
-#ifndef __INT24_TYPE__
-typedef int32_t int24_t;
-typedef uint32_t uint24_t;
-#endif
 #include <graphx.h>
 #include <keypadc.h>
 #include <sys/rtc.h>
 #include <sys/timers.h>
 #include <sys/util.h>
 #include <string.h>
+#include <ti/getcsc.h>
 
 const uint8_t GUI_HEIGHT = 12;
 const uint8_t SCALE_FACTOR = 5;
@@ -79,14 +76,13 @@ inline uint8_t getPixel(uint8_t x, uint8_t y) {
 
 inline void setPixel(uint8_t x, uint8_t y, uint8_t color) {
     if (IN_BOUNDS(x, y)) {
-        uint8_t currentColor = getPixel(x, y);
-        if (color != currentColor) {
+        if (color != getPixel(x, y)) {
             // If the color is being set to something else, adjust the active count
-            if (currentColor != 0) {
-                --activeCount; // Decrement active count if it's not zero
-            }
             if (color != 0) {
                 ++activeCount; // Increment active count if the new color is non-zero
+            }
+            else {
+                --activeCount; // Decrement active count if it is zero
             }
         }
 
@@ -334,32 +330,6 @@ inline void updateSand(uint8_t x, uint8_t y) {
     }
 }
 
-// void updateWater(uint8_t x, uint8_t y) {
-//     if (y + 1 >= HEIGHT)
-//         return;
-//     // If down is empty
-//     if (!getPixel(x, y + 1)) {
-//         setPixel(x, y, 0);
-//         setPixel(x, y + 1, WATER);
-//     }
-//     else if (!getPixel(x - 1, y + 1) && x > 0) {
-//         setPixel(x, y, 0);
-//         setPixel(x - 1, y + 1, WATER);
-//     }
-//     else if (!getPixel(x + 1, y + 1) && x + 1 < WIDTH) {
-//         setPixel(x, y, 0);
-//         setPixel(x + 1, y + 1, WATER);
-//     }
-//     else if (!getPixel(x - 1, y) && x > 0) {
-//         setPixel(x, y, 0);
-//         setPixel(x - 1, y, WATER);
-//     }
-//     else if (!getPixel(x + 1, y) && x + 1 < WIDTH) {
-//         setPixel(x, y, 0);
-//         setPixel(x + 1, y, WATER);
-//     }
-// }
-
 inline void updateWater(uint8_t x, uint8_t y) {
     if (enableFloor && y == HEIGHT - 1)
         return;
@@ -444,14 +414,34 @@ inline void updateAcid(uint8_t x, uint8_t y) {
         setPixel(x, y, 0);
 }
 
+void mainMenu() {
+    gfx_FillScreen(50);
+    gfx_SetTextFGColor(255);
+    gfx_SetTextBGColor(50);
+    gfx_SetTextTransparentColor(0);
+    gfx_SetTextScale(3, 3);
+    gfx_PrintStringXY("Sandbox", GFX_LCD_WIDTH / 4, GFX_LCD_HEIGHT / 3);
+    gfx_SwapDraw();
+
+    while (!os_GetCSC()) {}
+}
+
 int main(void)
 {
+    // Seed random with time
     srandom(rtc_Time());
-    gfx_Begin();
-    gfx_SetDrawBuffer();
+    
+    // Precalculate y offsets
     for (uint8_t y = 0; y < HEIGHT; y++) {
         yOffsets[y] = y * WIDTH;
     }
+
+    gfx_Begin();
+    gfx_SetDrawBuffer();
+
+    mainMenu();
+
+    // Enable timer for frametime tracking
     timer_Enable(1, TIMER_32K, TIMER_NOINT, TIMER_UP);
     timer_Set(1, 0);
     uint16_t lastTick = timer_GetSafe(1, TIMER_UP), currentTick;
