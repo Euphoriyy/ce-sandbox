@@ -450,9 +450,10 @@ int main(void)
         kb_Scan();
         handleInput();
         render();
-        if (activeCount && !isPaused)
+        if (activeCount && !isPaused) {
             update();
-        ++frame;
+            ++frame;
+        }
 
         currentTick = timer_GetSafe(1, TIMER_UP);
         frametime = (currentTick - lastTick) * 1000 / 32768;
