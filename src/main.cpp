@@ -6,11 +6,12 @@ typedef uint32_t uint24_t;
 #include <graphx.h>
 #include <keypadc.h>
 #include <sys/rtc.h>
+#include <sys/timers.h>
 #include <sys/util.h>
 #include <string.h>
 
 const uint8_t GUI_HEIGHT = 12;
-const uint8_t SCALE_FACTOR = 6;
+const uint8_t SCALE_FACTOR = 5;
 const uint8_t WIDTH = GFX_LCD_WIDTH / SCALE_FACTOR;
 const uint8_t HEIGHT = (GFX_LCD_HEIGHT - GUI_HEIGHT) / SCALE_FACTOR;
 const uint16_t TOTAL_PIXELS = WIDTH * HEIGHT;
@@ -26,7 +27,7 @@ struct Vector2 {
 };
 
 struct Keys {
-    bool enter = false, del = false, yequ = false, graph = false, second = false, window = false;
+    bool enter = false, del = false, yequ = false, graph = false, second = false, zoom = false, window = false, trace = false;
 };
 
 struct KeyState {
@@ -38,11 +39,12 @@ const uint8_t SAND = 245;
 const uint8_t WATER = 28;
 const uint8_t STONE = 148;
 const uint8_t ACID = 109;
-uint16_t pixelCount = 0;
 
 const uint8_t palette[] = { SAND, WATER, STONE, ACID };
 
 const uint8_t paletteLen = sizeof(palette) / sizeof(uint8_t);
+
+uint8_t brushSize = 1;
 
 struct Cursor {
     Vector2 pos;
@@ -53,7 +55,12 @@ struct Cursor {
 
 Cursor cursor;
 uint8_t pixels[TOTAL_PIXELS] = {0};
-bool active[TOTAL_PIXELS] = {0};
+bool activeFlags[TOTAL_PIXELS] = {0};
+bool activeRows[HEIGHT] = {0};
+uint16_t activeCount = 0;
+uint16_t frame = 0;
+uint8_t frametime = 0;
+uint16_t lastUpdate[TOTAL_PIXELS];
 KeyState keyState;
 bool isDrawing = false, isErasing = false, isPaused = false, enableFloor = true;
 
@@ -65,35 +72,56 @@ static uint16_t yOffsets[HEIGHT];
 #define IN_BOUNDS(x, y) ((x) < WIDTH && (y) < HEIGHT)
 
 // Pixel I/O
-// inline void setPixel(uint8_t x, uint8_t y, uint8_t color) {
-//     if (IN_BOUNDS(x, y)) pixels[IDX(x, y)] = color;
-// }
-
-// inline uint8_t getPixel(uint8_t x, uint8_t y) {
-//     return IN_BOUNDS(x, y) ? pixels[IDX(x, y)] : 0;
-// }
-
-inline void setPixel(uint8_t x, uint8_t y, uint8_t color) {
-    if (IN_BOUNDS(x, y)) {
-        pixels[IDX(x, y)] = color;
-        if (color != 0) {
-            active[IDX(x, y)] = true;
-        }
-        else {
-            active[IDX(x, y)] = false;
-        }
-    }
-}
 
 inline uint8_t getPixel(uint8_t x, uint8_t y) {
     return IN_BOUNDS(x, y) ? pixels[IDX(x, y)] : 0;
 }
 
+inline void setPixel(uint8_t x, uint8_t y, uint8_t color) {
+    if (IN_BOUNDS(x, y)) {
+        uint8_t currentColor = getPixel(x, y);
+        if (color != currentColor) {
+            // If the color is being set to something else, adjust the active count
+            if (currentColor != 0) {
+                --activeCount; // Decrement active count if it's not zero
+            }
+            if (color != 0) {
+                ++activeCount; // Increment active count if the new color is non-zero
+            }
+        }
+
+        pixels[IDX(x, y)] = color;
+        if (color != 0) {
+            activeFlags[IDX(x, y)] = true;
+            activeRows[y] = true;
+        }
+        else {
+            activeFlags[IDX(x, y)] = false;
+            bool rowActive = false;
+            for (int j = 0; j < WIDTH; ++j) {
+                if (activeFlags[IDX(j, y)]) rowActive = true;
+            }
+            activeRows[y] = rowActive;
+        }
+        // When a pixel is updated, change the updated status of itself and its adjacent pixels
+        for (int8_t dy = -1; dy <= 1; dy++) {
+            for (int8_t dx = -1; dx <= 1; dx++) {
+                uint8_t nx = x + dx, ny = y + dy;
+                if (IN_BOUNDS(nx, ny)) lastUpdate[IDX(nx, ny)] = frame;
+            }
+        }
+    }
+}
+
+// MAIN FUNCTIONS
+
 void handleInput() {
     if (kb_IsDown(kb_KeyClear)) {
         memset(pixels, 0, sizeof(pixels));
-        memset(active, 0, TOTAL_PIXELS);
-        pixelCount = 0;
+        memset(activeFlags, 0, TOTAL_PIXELS);
+        memset(activeRows, 0, HEIGHT);
+        memset(lastUpdate, 0, sizeof(lastUpdate));
+        activeCount = 0;
     }
     if (kb_IsDown(kb_KeyRight) && cursor.pos.x < WIDTH - 1)
         cursor.pos.x++;
@@ -110,7 +138,9 @@ void handleInput() {
     keyState.cur.yequ = kb_IsDown(kb_KeyYequ);
     keyState.cur.graph = kb_IsDown(kb_KeyGraph);
     keyState.cur.second = kb_IsDown(kb_Key2nd);
+    keyState.cur.zoom = kb_IsDown(kb_KeyZoom);
     keyState.cur.window = kb_IsDown(kb_KeyWindow);
+    keyState.cur.trace = kb_IsDown(kb_KeyTrace);
 
     // Toggle Drawing Mode
     if (keyState.cur.enter && !keyState.prev.enter) {
@@ -131,8 +161,15 @@ void handleInput() {
         isPaused = !isPaused;
 
     // Toggle Floor
-    if (keyState.cur.window && !keyState.prev.window)
+    if (keyState.cur.zoom && !keyState.prev.zoom)
         enableFloor = !enableFloor;
+
+    // Increase Brush Size
+    if (keyState.cur.window && !keyState.prev.window)
+        if (brushSize > 1) brushSize--;
+
+    if (keyState.cur.trace && !keyState.prev.trace)
+        if (brushSize < 10) ++brushSize;
 
     // Switch palette
     if (keyState.cur.yequ && !keyState.prev.yequ) {
@@ -151,11 +188,9 @@ void handleInput() {
     // Draw or erase based on current mode
     if (isDrawing && !getPixel(cursor.pos.x, cursor.pos.y)) {
         setPixel(cursor.pos.x, cursor.pos.y, palette[cursor.paletteIndex]);
-        ++pixelCount;
     }
     else if (isErasing && getPixel(cursor.pos.x, cursor.pos.y)) {
         setPixel(cursor.pos.x, cursor.pos.y, 0);
-        --pixelCount;
     }
 
     // Set the previous key state to be the current key state
@@ -163,24 +198,30 @@ void handleInput() {
 }
 
 void render() {
-    gfx_FillScreen(0);
+    gfx_ZeroScreen();
     // Draw Pixels
     uint8_t prevColor = 0;
-    for (uint8_t y = 0; pixelCount && y < HEIGHT; ++y) {
+    for (uint8_t y = 0; activeCount && y < HEIGHT; ++y) {
+        // Skips inactive rows
+        if (!activeRows[y]) continue;
+        
         uint8_t scaledY = y * SCALE_FACTOR + GUI_HEIGHT;
         uint8_t yScaleOffset = y == HEIGHT - 1 ? gcd(GFX_LCD_HEIGHT, SCALE_FACTOR): 0;
         yScaleOffset -= yScaleOffset / 2; // Avoid overflowing issues
+        
         for (uint8_t x = 0; x < WIDTH; ++x) {
-            if (active[IDX(x, y)]) {
-                uint8_t color = getPixel(x, y);
-                uint8_t xScaleOffset = x == WIDTH - 1 && SCALE_FACTOR != gcd(GFX_LCD_WIDTH, SCALE_FACTOR) ? gcd(GFX_LCD_WIDTH, SCALE_FACTOR): 0;
-                if (color && color != prevColor) {
+            // Do not draw if pixel is not flagged as active
+            if (!activeFlags[IDX(x, y)]) continue;
+
+            uint8_t color = getPixel(x, y);
+            uint8_t xScaleOffset = x == WIDTH - 1 && SCALE_FACTOR != gcd(GFX_LCD_WIDTH, SCALE_FACTOR) ? gcd(GFX_LCD_WIDTH, SCALE_FACTOR): 0;
+            
+            if (color) {
+                if (color != prevColor) {
                     gfx_SetColor(color);
                     prevColor = color;
                 }
-                if (color) {
-                    gfx_FillRectangle_NoClip(x * SCALE_FACTOR, scaledY, SCALE_FACTOR + xScaleOffset, SCALE_FACTOR + yScaleOffset);
-                }
+                gfx_FillRectangle_NoClip(x * SCALE_FACTOR, scaledY, SCALE_FACTOR + xScaleOffset, SCALE_FACTOR + yScaleOffset);
             }
         }
     }
@@ -229,54 +270,49 @@ void render() {
             break;
     }
 
-    gfx_PrintStringXY("PARTS:", 220, 3);
-    gfx_SetTextXY(280, 3);
-    gfx_PrintUInt(pixelCount, 4);
+    gfx_PrintStringXY("SZ:", 135, 3);
+    gfx_SetTextXY(158, 3);
+    gfx_PrintUInt(brushSize, 1);
+
+    gfx_PrintStringXY("FT:", 180, 3);
+    gfx_SetTextXY(205, 3);
+    gfx_PrintUInt(frametime, 2);
+
+    gfx_PrintStringXY("PARTS:", 230, 3);
+    gfx_SetTextXY(281, 3);
+    gfx_PrintUInt(activeCount, 1);
     // --------------
     gfx_SwapDraw();
 }
 
-void updateSand(uint8_t x, uint8_t y);
-void updateWater(uint8_t x, uint8_t y);
-void updateAcid(uint8_t x, uint8_t y);
+inline void updateSand(uint8_t x, uint8_t y);
+inline void updateWater(uint8_t x, uint8_t y);
+inline void updateAcid(uint8_t x, uint8_t y);
 
 void update() {
     for (uint8_t y = HEIGHT - 1, x; y != 0xFF; --y) {
+        if (!activeRows[y]) continue;
         bool flip = randInt(0, 1);
-        if (flip) {
-            for (x = 0; x < WIDTH; ++x) {
-                if (active[IDX(x, y)]) {
-                    uint8_t color = getPixel(x, y);
-                    if (color) {
-                        if (color == SAND)
-                            updateSand(x, y);
-                        else if (color == WATER)
-                            updateWater(x, y);
-                        else if (color == ACID)
-                            updateAcid(x, y);
-                    }
-                }
-            }
-        }
-        else {
-            for (x = WIDTH - 1; x != 0xFF; --x) {
-                if (active[IDX(x, y)]) {
-                    uint8_t color = getPixel(x, y);
-                    if (color) {
-                        if (color == SAND)
-                            updateSand(x, y);
-                        else if (color == WATER)
-                            updateWater(x, y);
-                        else if (color == ACID)
-                            updateAcid(x, y);
-                    }
+        for (x = (flip ? 0 : WIDTH - 1); flip ? x < WIDTH : x != 0xFF; x += (flip ? 1 : -1))
+        {
+            uint16_t idx = IDX(x, y);
+            // Only update if the pixel is active and it was updated within the last 5 frames
+            if (activeFlags[idx] && frame - lastUpdate[idx] < 5) {
+                uint8_t color = getPixel(x, y);
+                if (color) {
+                    if (color == SAND)
+                        updateSand(x, y);
+                    else if (color == WATER)
+                        updateWater(x, y);
+                    else if (color == ACID)
+                        updateAcid(x, y);
                 }
             }
         }
     }
 }
 
-void updateSand(uint8_t x, uint8_t y) {
+inline void updateSand(uint8_t x, uint8_t y) {
     if (enableFloor && y == HEIGHT - 1)
         return;
     // If down is empty
@@ -324,7 +360,7 @@ void updateSand(uint8_t x, uint8_t y) {
 //     }
 // }
 
-void updateWater(uint8_t x, uint8_t y) {
+inline void updateWater(uint8_t x, uint8_t y) {
     if (enableFloor && y == HEIGHT - 1)
         return;
     // If down is empty
@@ -350,7 +386,7 @@ void updateWater(uint8_t x, uint8_t y) {
     }
 }
 
-void updateAcid(uint8_t x, uint8_t y) {
+inline void updateAcid(uint8_t x, uint8_t y) {
     if (enableFloor && y == HEIGHT - 1)
         return;
     // If down is empty
@@ -393,14 +429,20 @@ void updateAcid(uint8_t x, uint8_t y) {
             setPixel(x, y, 0);
             setPixel(x + 1, y + 1, ACID);
         }
+        else if (getPixel(x - 1, y) && getPixel(x - 1, y) != ACID) {
+            setPixel(x, y, 0);
+            setPixel(x - 1, y, ACID);
+        }
+        else if (getPixel(x + 1, y) && getPixel(x + 1, y) != ACID) {
+            setPixel(x, y, 0);
+            setPixel(x + 1, y, ACID);
+        }
     }
     
     // Dissipate
-    if (randInt(0, 49) == 0) {
+    if (randInt(0, 24) == 0)
         setPixel(x, y, 0);
-    }
 }
-
 
 int main(void)
 {
@@ -409,15 +451,25 @@ int main(void)
     gfx_SetDrawBuffer();
     for (uint8_t y = 0; y < HEIGHT; y++) {
         yOffsets[y] = y * WIDTH;
-}
+    }
+    timer_Enable(1, TIMER_32K, TIMER_NOINT, TIMER_UP);
+    timer_Set(1, 0);
+    uint16_t lastTick = timer_GetSafe(1, TIMER_UP), currentTick;
 
     while (!kb_IsDown(kb_KeyMode)) {
         kb_Scan();
         handleInput();
         render();
-        if (pixelCount && !isPaused)
+        if (activeCount && !isPaused)
             update();
+        ++frame;
+
+        currentTick = timer_GetSafe(1, TIMER_UP);
+        frametime = (currentTick - lastTick) * 1000 / 32768;
+        lastTick = currentTick;
     };
+
+    timer_Disable(1);
     gfx_End();
     
     return 0;
