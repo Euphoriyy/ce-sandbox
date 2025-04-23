@@ -13,7 +13,7 @@ int main(void)
     srandom(rtc_Time());
 
     // Precalculate y offsets
-    for (uint8_t y = 0; y < HEIGHT; y++)
+    for (uint8_t y = 0; y < HEIGHT; ++y)
         yOffsets[y] = y * WIDTH;
 
     // Set cursor size

@@ -11,13 +11,13 @@ void handleInput()
         activeCount = 0;
     }
     if (kb_IsDown(kb_KeyRight) && cursor.pos.x < WIDTH - 1)
-        cursor.pos.x++;
+        ++cursor.pos.x;
     if (kb_IsDown(kb_KeyLeft) && cursor.pos.x > 0)
-        cursor.pos.x--;
+        --cursor.pos.x;
     if (kb_IsDown(kb_KeyDown) && cursor.pos.y < HEIGHT - 1)
-        cursor.pos.y++;
+        ++cursor.pos.y;
     if (kb_IsDown(kb_KeyUp) && cursor.pos.y > 0)
-        cursor.pos.y--;
+        --cursor.pos.y;
 
     // Get current key state
     keyState.cur.enter = kb_IsDown(kb_KeyEnter);
@@ -64,7 +64,7 @@ void handleInput()
     // Increase Brush Size
     if (keyState.cur.window && !keyState.prev.window)
         if (brushSize > 1)
-            brushSize--;
+            --brushSize;
 
     if (keyState.cur.trace && !keyState.prev.trace)
         if (brushSize < 10)
@@ -74,14 +74,14 @@ void handleInput()
     if (keyState.cur.yequ && !keyState.prev.yequ)
     {
         if (cursor.paletteIndex > 0)
-            cursor.paletteIndex--;
+            --cursor.paletteIndex;
         else
             cursor.paletteIndex = paletteLen - 1;
     }
     else if (keyState.cur.graph && !keyState.prev.graph)
     {
         if (cursor.paletteIndex < paletteLen - 1)
-            cursor.paletteIndex++;
+            ++cursor.paletteIndex;
         else
             cursor.paletteIndex = 0;
     }

@@ -46,9 +46,9 @@ void setPixel(uint8_t x, uint8_t y, uint8_t color)
             activeRows[y] = rowActive;
         }
         // When a pixel is updated, change the updated status of itself and its adjacent pixels
-        for (int8_t dy = -1; dy <= 1; dy++)
+        for (int8_t dy = -1; dy <= 1; ++dy)
         {
-            for (int8_t dx = -1; dx <= 1; dx++)
+            for (int8_t dx = -1; dx <= 1; ++dx)
             {
                 uint8_t nx = x + dx, ny = y + dy;
                 if (IN_BOUNDS(nx, ny))
