@@ -171,7 +171,15 @@ void handleInput()
 
     // Toggle Floor
     if (keyState.cur.zoom && !keyState.prev.zoom)
+    {
         enableFloor = !enableFloor;
+        // Update the last row after disabling the floor
+        if (!enableFloor && activeRows[HEIGHT - 1])
+        {
+            for (uint8_t x = 0; x < WIDTH; ++x)
+                lastUpdate[IDX(x, HEIGHT - 1)] = frame;
+        }
+    }
 
     // Increase Brush Size
     if (keyState.cur.window && !keyState.prev.window)
