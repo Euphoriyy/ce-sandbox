@@ -7,6 +7,8 @@
 #include <sys/util.h>
 #include <ti/getcsc.h>
 
+#include "../include/math.h"
+
 const uint8_t GUI_HEIGHT = 12;
 const uint8_t SCALE_FACTOR = 5;
 const uint8_t WIDTH = GFX_LCD_WIDTH / SCALE_FACTOR;
@@ -14,13 +16,6 @@ const uint8_t HEIGHT = (GFX_LCD_HEIGHT - GUI_HEIGHT) / SCALE_FACTOR;
 const uint16_t TOTAL_PIXELS = WIDTH * HEIGHT;
 
 #define STRINGIFY(var) #var
-
-uint8_t gcd(uint16_t a, uint16_t b) { return !b ? a : gcd(b, a % b); }
-
-struct Vector2
-{
-    uint8_t x = 0, y = 0;
-};
 
 struct Keys
 {

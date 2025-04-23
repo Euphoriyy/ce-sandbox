@@ -1,0 +1,10 @@
+#pragma once
+
+#include <cstdint>
+
+uint8_t gcd(uint16_t a, uint16_t b);
+
+struct Vector2
+{
+    uint8_t x, y;
+};
