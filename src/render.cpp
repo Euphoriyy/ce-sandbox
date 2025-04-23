@@ -3,11 +3,11 @@
 void render()
 {
     gfx_ZeroScreen();
+
     // Draw Pixels
-    uint8_t prevColor = 0;
     for (uint8_t y = 0; activeCount && y < HEIGHT; ++y)
     {
-        // Skips inactive rows
+        // Skip inactive rows
         if (!activeRows[y])
             continue;
 
@@ -22,29 +22,44 @@ void render()
                 continue;
 
             uint8_t color = getPixel(x, y);
-            uint8_t xScaleOffset =
-                x == WIDTH - 1 && SCALE_FACTOR != gcd(GFX_LCD_WIDTH, SCALE_FACTOR)
-                    ? gcd(GFX_LCD_WIDTH, SCALE_FACTOR)
-                    : 0;
 
             if (color)
             {
-                if (color != prevColor)
+                gfx_SetColor(color);
+
+                uint8_t runStart = x, runEnd = x;
+
+                // Find the end of the contiguous run with the same color and an active flag
+                for (int i = x + 1; i < WIDTH && activeFlags[IDX(i, y)] && getPixel(i, y) == color;
+                     ++i)
                 {
-                    gfx_SetColor(color);
-                    prevColor = color;
+                    runEnd = i;
                 }
-                gfx_FillRectangle_NoClip(x * SCALE_FACTOR, scaledY, SCALE_FACTOR + xScaleOffset,
+
+                uint8_t runLength = runEnd - runStart + 1;
+                uint16_t runWidth = runLength * SCALE_FACTOR;
+
+                uint8_t xScaleOffset =
+                    (runEnd == WIDTH - 1 && SCALE_FACTOR != gcd(GFX_LCD_WIDTH, SCALE_FACTOR))
+                        ? gcd(GFX_LCD_WIDTH, SCALE_FACTOR)
+                        : 0;
+
+                // Fill a single rectangle for the whole contiguous run
+                gfx_FillRectangle_NoClip(runStart * SCALE_FACTOR, scaledY, runWidth + xScaleOffset,
                                          SCALE_FACTOR + yScaleOffset);
+
+                x = runEnd; // Advance x to skip this run
             }
         }
     }
+
     // Draw Cursor
     gfx_SetColor(cursor.color);
     uint16_t cx = cursor.pos.x * cursor.size;
     uint16_t cy = cursor.pos.y * cursor.size + GUI_HEIGHT;
     gfx_HorizLine(cx - cursor.size, cy, cursor.size * 2);
     gfx_VertLine(cx, cy - cursor.size, cursor.size * 2);
+    
     // Draw GUI
     gfx_SetColor(50);
     gfx_FillRectangle_NoClip(0, 0, GFX_LCD_WIDTH, GUI_HEIGHT);
@@ -66,6 +81,7 @@ void render()
     gfx_SetColor(palette[cursor.paletteIndex]);
     gfx_FillRectangle_NoClip(73, 3, 6, 6);
     gfx_SetTextXY(82, 3);
+    
     switch (palette[cursor.paletteIndex])
     {
         case SAND:
