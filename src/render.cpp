@@ -59,7 +59,7 @@ void render()
     uint16_t cy = cursor.pos.y * cursor.size + GUI_HEIGHT;
     gfx_HorizLine(cx - cursor.size, cy, cursor.size * 2);
     gfx_VertLine(cx, cy - cursor.size, cursor.size * 2);
-    
+
     // Draw GUI
     gfx_SetColor(50);
     gfx_FillRectangle_NoClip(0, 0, GFX_LCD_WIDTH, GUI_HEIGHT);
@@ -81,7 +81,7 @@ void render()
     gfx_SetColor(palette[cursor.paletteIndex]);
     gfx_FillRectangle_NoClip(73, 3, 6, 6);
     gfx_SetTextXY(82, 3);
-    
+
     switch (palette[cursor.paletteIndex])
     {
         case SAND:

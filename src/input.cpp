@@ -87,10 +87,46 @@ void handleInput()
     }
 
     // Draw or erase based on current mode
-    if (isDrawing && !getPixel(cursor.pos.x, cursor.pos.y))
-        setPixel(cursor.pos.x, cursor.pos.y, palette[cursor.paletteIndex]);
-    else if (isErasing && getPixel(cursor.pos.x, cursor.pos.y))
-        setPixel(cursor.pos.x, cursor.pos.y, 0);
+    if (isDrawing)
+    {
+        if (brushSize == 1)
+        {
+            if (!getPixel(cursor.pos.x, cursor.pos.y))
+                setPixel(cursor.pos.x, cursor.pos.y, palette[cursor.paletteIndex]);
+        }
+        else if (brushSize > 1)
+        {
+            for (int8_t dy = -brushSize / 2; dy < brushSize / 2; ++dy)
+            {
+                for (int8_t dx = -brushSize / 2; dx < brushSize / 2; ++dx)
+                {
+                    uint8_t x = cursor.pos.x + dx, y = cursor.pos.y + dy;
+                    if (IN_BOUNDS(x, y) && !getPixel(x, y))
+                        setPixel(x, y, palette[cursor.paletteIndex]);
+                }
+            }
+        }
+    }
+    else if (isErasing)
+    {
+        if (brushSize == 1)
+        {
+            if (getPixel(cursor.pos.x, cursor.pos.y))
+                setPixel(cursor.pos.x, cursor.pos.y, 0);
+        }
+        else if (brushSize > 1)
+        {
+            for (int8_t dy = -brushSize / 2; dy < brushSize / 2; ++dy)
+            {
+                for (int8_t dx = -brushSize / 2; dx < brushSize / 2; ++dx)
+                {
+                    uint8_t x = cursor.pos.x + dx, y = cursor.pos.y + dy;
+                    if (IN_BOUNDS(x, y) && getPixel(x, y))
+                        setPixel(x, y, 0);
+                }
+            }
+        }
+    }
 
     // Set the previous key state to be the current key state
     keyState.prev = keyState.cur;

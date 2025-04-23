@@ -1,9 +1,9 @@
 #include <sys/rtc.h>
 #include <sys/timers.h>
 
-#include "../include/pixels.h"
 #include "../include/game.h"
 #include "../include/input.h"
+#include "../include/pixels.h"
 #include "../include/render.h"
 #include "../include/update.h"
 
