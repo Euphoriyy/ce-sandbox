@@ -4,6 +4,8 @@ void render()
 {
     gfx_ZeroScreen();
 
+    uint8_t lastColor = 0xFF;
+
     // Draw Pixels
     for (uint8_t y = 0; activeCount && y < HEIGHT; ++y)
     {
@@ -25,8 +27,6 @@ void render()
 
             if (color)
             {
-                gfx_SetColor(color);
-
                 uint8_t runStart = x, runEnd = x;
 
                 // Find the end of the contiguous run with the same color and an active flag
@@ -43,6 +43,12 @@ void render()
                     (runEnd == WIDTH - 1 && SCALE_FACTOR != gcd(GFX_LCD_WIDTH, SCALE_FACTOR))
                         ? gcd(GFX_LCD_WIDTH, SCALE_FACTOR)
                         : 0;
+
+                if (color != lastColor)
+                {
+                    gfx_SetColor(color);
+                    lastColor = color;
+                }
 
                 // Fill a single rectangle for the whole contiguous run
                 gfx_FillRectangle_NoClip(runStart * SCALE_FACTOR, scaledY, runWidth + xScaleOffset,
@@ -111,7 +117,9 @@ void render()
     gfx_PrintStringXY("PARTS:", 230, 3);
     gfx_SetTextXY(281, 3);
     gfx_PrintUInt(activeCount, 1);
+
     // --------------
+
     gfx_SwapDraw();
 }
 
