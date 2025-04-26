@@ -55,8 +55,8 @@ void render()
 
     // Draw Cursor
     gfx_SetColor(cursor.color);
-    uint16_t cx = cursor.pos.x * cursor.size;
-    uint16_t cy = cursor.pos.y * cursor.size + GUI_HEIGHT;
+    uint16_t cx = cursor.pos.x * cursor.size + cursor.size / 2;
+    uint16_t cy = cursor.pos.y * cursor.size + GUI_HEIGHT + cursor.size / 2;
     gfx_HorizLine(cx - cursor.size, cy, cursor.size * 2);
     gfx_VertLine(cx, cy - cursor.size, cursor.size * 2);
 
