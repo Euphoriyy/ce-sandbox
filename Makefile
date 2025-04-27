@@ -4,7 +4,7 @@
 
 NAME = SANDBOX
 ICON = icon.png
-DESCRIPTION = "Sandbox Game for the TI-84 CE"
+DESCRIPTION = "Sandbox Game for the TI-84 Plus CE"
 COMPRESSED = YES
 
 CFLAGS = -Wall -Wextra -Oz
