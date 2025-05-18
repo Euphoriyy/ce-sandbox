@@ -19,16 +19,18 @@ void setPixel(uint8_t x, uint8_t y, uint8_t color)
 {
     if (IN_BOUNDS(x, y))
     {
-        if (color != getPixel(x, y))
+        uint8_t prevColor = getPixel(x, y);
+        if (color != prevColor)
         {
             // If the color is being set to something else, adjust the active count
-            if (color != 0)
+            if (prevColor == 0 && color != 0)
                 ++activeCount; // Increment active count if the new color is non-zero
-            else
+            else if (prevColor != 0 && color == 0)
                 --activeCount; // Decrement active count if it is zero
         }
 
         pixels[IDX(x, y)] = color;
+
         if (color != 0)
         {
             activeFlags[IDX(x, y)] = true;
