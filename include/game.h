@@ -23,11 +23,17 @@ struct Cursor
     uint8_t paletteIndex = 0;
 };
 
-const uint8_t SAND = 245;
-const uint8_t WATER = 28;
-const uint8_t STONE = 148;
-const uint8_t ACID = 109;
-const uint8_t palette[] = {SAND, WATER, STONE, ACID};
+enum Material
+{
+    Empty,
+    Sand,
+    Water,
+    Stone,
+    Acid
+};
+
+constexpr uint8_t materialShades[][1] = {{0}, {245}, {28}, {148}, {109}};
+const uint8_t palette[] = {Material::Sand, Material::Water, Material::Stone, Material::Acid};
 const uint8_t paletteLen = sizeof(palette);
 
 extern Cursor cursor;

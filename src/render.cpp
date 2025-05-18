@@ -1,10 +1,15 @@
 #include "../include/render.h"
 
+constexpr bool isBlackBackground() { return !materialShades[0][0]; }
+
 void render()
 {
-    gfx_ZeroScreen();
+    if (isBlackBackground())
+        gfx_ZeroScreen();
+    else
+        gfx_FillScreen(materialShades[0][0]);
 
-    uint8_t lastColor = 0xFF;
+    uint8_t lastMat = 0xFF;
 
     // Draw Pixels
     for (uint8_t y = 0; activeCount && y < HEIGHT; ++y)
@@ -23,14 +28,14 @@ void render()
             if (!activeFlags[IDX(x, y)])
                 continue;
 
-            uint8_t color = getPixel(x, y);
+            uint8_t mat = getPixel(x, y);
 
-            if (color)
+            if (mat)
             {
                 uint8_t runStart = x, runEnd = x;
 
-                // Find the end of the contiguous run with the same color and an active flag
-                for (int i = x + 1; i < WIDTH && activeFlags[IDX(i, y)] && getPixel(i, y) == color;
+                // Find the end of the contiguous run with the same mat and an active flag
+                for (int i = x + 1; i < WIDTH && activeFlags[IDX(i, y)] && getPixel(i, y) == mat;
                      ++i)
                 {
                     runEnd = i;
@@ -44,10 +49,10 @@ void render()
                         ? gcd(GFX_LCD_WIDTH, SCALE_FACTOR)
                         : 0;
 
-                if (color != lastColor)
+                if (mat != lastMat)
                 {
-                    gfx_SetColor(color);
-                    lastColor = color;
+                    gfx_SetColor(materialShades[mat][0]);
+                    lastMat = mat;
                 }
 
                 // Fill a single rectangle for the whole contiguous run
@@ -86,22 +91,22 @@ void render()
 
     gfx_SetColor(0);
     gfx_FillRectangle_NoClip(72, 2, 8, 8);
-    gfx_SetColor(palette[cursor.paletteIndex]);
+    gfx_SetColor(materialShades[palette[cursor.paletteIndex]][0]);
     gfx_FillRectangle_NoClip(73, 3, 6, 6);
     gfx_SetTextXY(82, 3);
 
     switch (palette[cursor.paletteIndex])
     {
-        case SAND:
+        case Material::Sand:
             gfx_PrintString("SAND");
             break;
-        case WATER:
+        case Material::Water:
             gfx_PrintString("WATER");
             break;
-        case STONE:
+        case Material::Stone:
             gfx_PrintString("STONE");
             break;
-        case ACID:
+        case Material::Acid:
             gfx_PrintString("ACID");
             break;
     }

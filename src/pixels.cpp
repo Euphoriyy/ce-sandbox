@@ -15,23 +15,23 @@ uint16_t yOffsets[HEIGHT];
 
 uint8_t getPixel(uint8_t x, uint8_t y) { return IN_BOUNDS(x, y) ? pixels[IDX(x, y)] : 0; }
 
-void setPixel(uint8_t x, uint8_t y, uint8_t color)
+void setPixel(uint8_t x, uint8_t y, uint8_t mat)
 {
     if (IN_BOUNDS(x, y))
     {
-        uint8_t prevColor = getPixel(x, y);
-        if (color != prevColor)
+        uint8_t prevMat = getPixel(x, y);
+        if (mat != prevMat)
         {
-            // If the color is being set to something else, adjust the active count
-            if (prevColor == 0 && color != 0)
-                ++activeCount; // Increment active count if the new color is non-zero
-            else if (prevColor != 0 && color == 0)
+            // If the mat is being set to something else, adjust the active count
+            if (prevMat == 0 && mat != 0)
+                ++activeCount; // Increment active count if the new mat is non-zero
+            else if (prevMat != 0 && mat == 0)
                 --activeCount; // Decrement active count if it is zero
         }
 
-        pixels[IDX(x, y)] = color;
+        pixels[IDX(x, y)] = mat;
 
-        if (color != 0)
+        if (mat != 0)
         {
             activeFlags[IDX(x, y)] = true;
             activeRows[y] = true;

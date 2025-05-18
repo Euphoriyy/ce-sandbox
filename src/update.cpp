@@ -16,11 +16,11 @@ void update()
                 uint8_t color = getPixel(x, y);
                 if (color)
                 {
-                    if (color == SAND)
+                    if (color == Material::Sand)
                         updateSand(x, y);
-                    else if (color == WATER)
+                    else if (color == Material::Water)
                         updateWater(x, y);
-                    else if (color == ACID)
+                    else if (color == Material::Acid)
                         updateAcid(x, y);
                 }
             }
@@ -36,22 +36,22 @@ void updateSand(uint8_t x, uint8_t y)
     if (!getPixel(x, y + 1))
     {
         setPixel(x, y, 0);
-        setPixel(x, y + 1, SAND);
+        setPixel(x, y + 1, Material::Sand);
     }
     else if (!getPixel(x - 1, y + 1) && x > 0)
     {
         setPixel(x, y, 0);
-        setPixel(x - 1, y + 1, SAND);
+        setPixel(x - 1, y + 1, Material::Sand);
     }
     else if (!getPixel(x + 1, y + 1) && x + 1 < WIDTH)
     {
         setPixel(x, y, 0);
-        setPixel(x + 1, y + 1, SAND);
+        setPixel(x + 1, y + 1, Material::Sand);
     }
-    else if (getPixel(x, y + 1) == WATER)
+    else if (getPixel(x, y + 1) == Material::Water)
     {
-        setPixel(x, y, WATER);
-        setPixel(x, y + 1, SAND);
+        setPixel(x, y, Material::Water);
+        setPixel(x, y + 1, Material::Sand);
     }
 }
 
@@ -63,27 +63,27 @@ void updateWater(uint8_t x, uint8_t y)
     if (!getPixel(x, y + 1))
     {
         setPixel(x, y, 0);
-        setPixel(x, y + 1, WATER);
+        setPixel(x, y + 1, Material::Water);
     }
     else if (x > 0 && !getPixel(x - 1, y + 1))
     {
         setPixel(x, y, 0);
-        setPixel(x - 1, y + 1, WATER);
+        setPixel(x - 1, y + 1, Material::Water);
     }
     else if (x + 1 < WIDTH && !getPixel(x + 1, y + 1))
     {
         setPixel(x, y, 0);
-        setPixel(x + 1, y + 1, WATER);
+        setPixel(x + 1, y + 1, Material::Water);
     }
     else if (x > 0 && !getPixel(x - 1, y))
     {
         setPixel(x, y, 0);
-        setPixel(x - 1, y, WATER);
+        setPixel(x - 1, y, Material::Water);
     }
     else if (x + 1 < WIDTH && !getPixel(x + 1, y))
     {
         setPixel(x, y, 0);
-        setPixel(x + 1, y, WATER);
+        setPixel(x + 1, y, Material::Water);
     }
 }
 
@@ -95,61 +95,62 @@ void updateAcid(uint8_t x, uint8_t y)
     if (!getPixel(x, y + 1))
     {
         setPixel(x, y, 0);
-        setPixel(x, y + 1, ACID);
+        setPixel(x, y + 1, Material::Acid);
     }
     else if (x > 0 && !getPixel(x - 1, y + 1))
     {
         setPixel(x, y, 0);
-        setPixel(x - 1, y + 1, ACID);
+        setPixel(x - 1, y + 1, Material::Acid);
     }
     else if (x + 1 < WIDTH && !getPixel(x + 1, y + 1))
     {
         setPixel(x, y, 0);
-        setPixel(x + 1, y + 1, ACID);
+        setPixel(x + 1, y + 1, Material::Acid);
     }
     else if (x > 0 && !getPixel(x - 1, y))
     {
         setPixel(x, y, 0);
-        setPixel(x - 1, y, ACID);
+        setPixel(x - 1, y, Material::Acid);
     }
     else if (x + 1 < WIDTH && !getPixel(x + 1, y))
     {
         setPixel(x, y, 0);
-        setPixel(x + 1, y, ACID);
+        setPixel(x + 1, y, Material::Acid);
     }
 
     // Corrode nearby materials
     if (randInt(0, 9) == 0)
     {
-        if (getPixel(x, y - 1) && getPixel(x, y - 1) != ACID)
+        if (getPixel(x, y - 1) && getPixel(x, y - 1) != Material::Acid)
         {
             setPixel(x, y, 0);
-            setPixel(x, y - 1, ACID);
+            setPixel(x, y - 1, Material::Acid);
         }
-        else if (getPixel(x, y + 1) && getPixel(x, y + 1) != ACID)
+        else if (getPixel(x, y + 1) && getPixel(x, y + 1) != Material::Acid)
         {
             setPixel(x, y, 0);
-            setPixel(x, y + 1, ACID);
+            setPixel(x, y + 1, Material::Acid);
         }
-        else if (getPixel(x - 1, y + 1) && getPixel(x - 1, y + 1) != ACID && x > 0)
+        else if (getPixel(x - 1, y + 1) && getPixel(x - 1, y + 1) != Material::Acid && x > 0)
         {
             setPixel(x, y, 0);
-            setPixel(x - 1, y + 1, ACID);
+            setPixel(x - 1, y + 1, Material::Acid);
         }
-        else if (getPixel(x + 1, y + 1) && getPixel(x + 1, y + 1) != ACID && x + 1 < WIDTH)
+        else if (getPixel(x + 1, y + 1) && getPixel(x + 1, y + 1) != Material::Acid &&
+                 x + 1 < WIDTH)
         {
             setPixel(x, y, 0);
-            setPixel(x + 1, y + 1, ACID);
+            setPixel(x + 1, y + 1, Material::Acid);
         }
-        else if (getPixel(x - 1, y) && getPixel(x - 1, y) != ACID)
+        else if (getPixel(x - 1, y) && getPixel(x - 1, y) != Material::Acid)
         {
             setPixel(x, y, 0);
-            setPixel(x - 1, y, ACID);
+            setPixel(x - 1, y, Material::Acid);
         }
-        else if (getPixel(x + 1, y) && getPixel(x + 1, y) != ACID)
+        else if (getPixel(x + 1, y) && getPixel(x + 1, y) != Material::Acid)
         {
             setPixel(x, y, 0);
-            setPixel(x + 1, y, ACID);
+            setPixel(x + 1, y, Material::Acid);
         }
     }
 
