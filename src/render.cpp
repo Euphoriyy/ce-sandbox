@@ -9,8 +9,6 @@ void render()
     else
         gfx_FillScreen(materialShades[0][0]);
 
-    uint8_t lastMat = 0xFF;
-
     // Draw Pixels
     for (uint8_t y = 0; activeCount && y < HEIGHT; ++y)
     {
@@ -49,11 +47,12 @@ void render()
                         ? gcd(GFX_LCD_WIDTH, SCALE_FACTOR)
                         : 0;
 
-                if (mat != lastMat)
-                {
-                    gfx_SetColor(materialShades[mat][0]);
-                    lastMat = mat;
-                }
+                // Set color to material shade
+                uint8_t shadeIndex = (y % shadeCount == 0 ? 2 : 1) * (y & 1);
+                uint8_t materialShade = materialShades[mat][shadeIndex];
+                if (!materialShade)
+                    materialShade = materialShades[mat][0];
+                gfx_SetColor(materialShade);
 
                 // Fill a single rectangle for the whole contiguous run
                 gfx_FillRectangle_NoClip(runStart * SCALE_FACTOR, scaledY, runWidth + xScaleOffset,

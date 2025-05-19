@@ -32,7 +32,9 @@ enum Material
     Acid
 };
 
-constexpr uint8_t materialShades[][1] = {{0}, {245}, {28}, {148}, {109}};
+const uint8_t shadeCount = 3;
+constexpr uint8_t materialShades[][shadeCount] = {
+    {0}, {245, 213, 0}, {26, 27, 28}, {148, 0, 181}, {109, 77, 110}};
 const uint8_t palette[] = {Material::Sand, Material::Water, Material::Stone, Material::Acid};
 const uint8_t paletteLen = sizeof(palette);
 
