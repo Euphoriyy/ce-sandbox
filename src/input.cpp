@@ -96,9 +96,9 @@ void handleInput()
         }
         else if (brushSize > 1)
         {
-            for (int8_t dy = -brushSize / 2; dy < brushSize / 2; ++dy)
+            for (int8_t dy = -brushSize / 2; dy < brushSize / 2 + (brushSize & 1); ++dy)
             {
-                for (int8_t dx = -brushSize / 2; dx < brushSize / 2; ++dx)
+                for (int8_t dx = -brushSize / 2; dx < brushSize / 2 + (brushSize & 1); ++dx)
                 {
                     uint8_t x = cursor.pos.x + dx, y = cursor.pos.y + dy;
                     if (IN_BOUNDS(x, y) && !getPixel(x, y))
@@ -116,9 +116,9 @@ void handleInput()
         }
         else if (brushSize > 1)
         {
-            for (int8_t dy = -brushSize / 2; dy < brushSize / 2; ++dy)
+            for (int8_t dy = -brushSize / 2; dy < brushSize / 2 + (brushSize & 1); ++dy)
             {
-                for (int8_t dx = -brushSize / 2; dx < brushSize / 2; ++dx)
+                for (int8_t dx = -brushSize / 2; dx < brushSize / 2 + (brushSize & 1); ++dx)
                 {
                     uint8_t x = cursor.pos.x + dx, y = cursor.pos.y + dy;
                     if (IN_BOUNDS(x, y) && getPixel(x, y))
