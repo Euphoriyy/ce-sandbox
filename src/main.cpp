@@ -33,12 +33,17 @@ int main(void)
     {
         kb_Scan();
         handleInput();
+
+        asm volatile("di");
+        
         render();
         if (activeCount && !isPaused)
         {
             update();
             ++frame;
         }
+        
+        asm volatile("ei");
 
         currentTick = timer_GetSafe(1, TIMER_UP);
         frametime = (currentTick - lastTick) * 1000 / 32768;
