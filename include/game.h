@@ -34,8 +34,8 @@ enum Material
 };
 
 const uint8_t shadeCount = 3;
-constexpr uint8_t materialShades[][shadeCount] = {{0},         {245, 213, 0}, {26, 27, 28},
-                                                  {65, 64, 0}, {148, 0, 181}, {109, 77, 110}};
+constexpr uint8_t materialShades[][shadeCount] = {{0},        {245, 213, 0}, {26, 27, 28},
+                                                  {64, 0, 0}, {148, 0, 181}, {109, 77, 110}};
 const uint8_t palette[] = {Material::Sand, Material::Water, Material::Dirt, Material::Stone,
                            Material::Acid};
 const uint8_t paletteLen = sizeof(palette);
