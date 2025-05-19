@@ -13,15 +13,21 @@ void update()
             // Only update if the pixel is active and it was updated within the last 5 frames
             if (activeFlags[idx] && frame - lastUpdate[idx] < 5)
             {
-                uint8_t color = getPixel(x, y);
-                if (color)
+                uint8_t mat = getPixel(x, y);
+                switch (mat)
                 {
-                    if (color == Material::Sand)
+                    case Material::Sand:
                         updateSand(x, y);
-                    else if (color == Material::Water)
+                        break;
+                    case Material::Water:
                         updateWater(x, y);
-                    else if (color == Material::Acid)
+                        break;
+                    case Material::Dirt:
+                        updateDirt(x, y);
+                        break;
+                    case Material::Acid:
                         updateAcid(x, y);
+                        break;
                 }
             }
         }
@@ -84,6 +90,33 @@ void updateWater(uint8_t x, uint8_t y)
     {
         setPixel(x, y, 0);
         setPixel(x + 1, y, Material::Water);
+    }
+}
+
+void updateDirt(uint8_t x, uint8_t y)
+{
+    if (enableFloor && y == HEIGHT - 1)
+        return;
+    // If down is empty
+    if (!getPixel(x, y + 1))
+    {
+        setPixel(x, y, 0);
+        setPixel(x, y + 1, Material::Dirt);
+    }
+    else if (!getPixel(x - 1, y + 1) && x > 0)
+    {
+        setPixel(x, y, 0);
+        setPixel(x - 1, y + 1, Material::Dirt);
+    }
+    else if (!getPixel(x + 1, y + 1) && x + 1 < WIDTH)
+    {
+        setPixel(x, y, 0);
+        setPixel(x + 1, y + 1, Material::Dirt);
+    }
+    else if (getPixel(x, y + 1) == Material::Water)
+    {
+        setPixel(x, y, Material::Water);
+        setPixel(x, y + 1, Material::Dirt);
     }
 }
 

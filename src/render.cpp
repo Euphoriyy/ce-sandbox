@@ -48,11 +48,10 @@ void render()
                         : 0;
 
                 // Set color to material shade
-                uint8_t shadeIndex = (y % shadeCount == 0 ? 2 : 1) * (y & 1);
-                uint8_t materialShade = materialShades[mat][shadeIndex];
-                if (!materialShade)
-                    materialShade = materialShades[mat][0];
-                gfx_SetColor(materialShade);
+                bool yDivisible = (y * 0xAAAAAAABULL >> 33) * 3 == y;
+                uint8_t shadeIndex = ((yDivisible ? 2 : 1) & -(y & 1));
+                uint8_t shade = materialShades[mat][shadeIndex];
+                gfx_SetColor(shade ? shade : materialShades[mat][0]);
 
                 // Fill a single rectangle for the whole contiguous run
                 gfx_FillRectangle_NoClip(runStart * SCALE_FACTOR, scaledY, runWidth + xScaleOffset,
@@ -104,6 +103,9 @@ void render()
             break;
         case Material::Stone:
             gfx_PrintString("STONE");
+            break;
+        case Material::Dirt:
+            gfx_PrintString("DIRT");
             break;
         case Material::Acid:
             gfx_PrintString("ACID");
