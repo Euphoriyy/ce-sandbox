@@ -3,6 +3,7 @@
 #include <graphx.h>
 
 #include "game.h"
+#include "gfx/gfx.h"
 
 extern const uint8_t GUI_HEIGHT;
 extern const uint8_t SCALE_FACTOR;

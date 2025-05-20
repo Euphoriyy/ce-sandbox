@@ -1,3 +1,4 @@
+#include <graphx.h>
 #include <sys/rtc.h>
 #include <sys/timers.h>
 
@@ -21,6 +22,8 @@ int main(void)
 
     gfx_Begin();
     gfx_SetDrawBuffer();
+
+    gfx_SetPalette(global_palette, sizeof_global_palette, 0);
 
     mainMenu();
 

@@ -1,10 +1,13 @@
 #include "../include/render.h"
 
+constexpr bool isImageBackground() { return materialShades[0][1]; }
 constexpr bool isBlackBackground() { return !materialShades[0][0]; }
 
 void render()
 {
-    if (isBlackBackground())
+    if (isImageBackground())
+        gfx_ScaledSprite_NoClip(background_1, 0, 0, 8, 8);
+    else if (isBlackBackground())
         gfx_ZeroScreen();
     else
         gfx_FillScreen(materialShades[0][0]);
@@ -131,12 +134,16 @@ void render()
 
 void mainMenu()
 {
-    gfx_FillScreen(50);
+    gfx_FillScreen(16);
+
+    gfx_ScaledTransparentSprite_NoClip(title, GFX_LCD_WIDTH / 8, GFX_LCD_HEIGHT / 3, 4, 4);
+
     gfx_SetTextFGColor(255);
-    gfx_SetTextBGColor(50);
+    gfx_SetTextBGColor(16);
     gfx_SetTextTransparentColor(0);
-    gfx_SetTextScale(3, 3);
-    gfx_PrintStringXY("Sandbox", GFX_LCD_WIDTH / 4, GFX_LCD_HEIGHT / 3);
+    gfx_SetTextScale(1, 1);
+    gfx_PrintStringXY("Press Any Key", GFX_LCD_WIDTH / 5, 170);
+    
     gfx_SwapDraw();
 
     while (!os_GetCSC())
