@@ -27,9 +27,8 @@ void setPixel(uint8_t x, uint8_t y, uint8_t mat)
                 ++activeCount; // Increment active count if the new mat is non-zero
             else if (prevMat != 0 && mat == 0)
                 --activeCount; // Decrement active count if it is zero
+            pixels[IDX(x, y)] = mat;
         }
-
-        pixels[IDX(x, y)] = mat;
 
         if (mat != 0)
         {
