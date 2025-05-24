@@ -9,11 +9,12 @@ uint8_t brushSize = 1;
 
 void clearCursor()
 {
-    for (int8_t dx = -brushSize; dx < brushSize + 1; ++dx)
+    uint8_t offsetBrushSize = brushSize + 1;
+    for (int8_t dx = -offsetBrushSize; dx < offsetBrushSize; ++dx)
     {
         makeDirty(cursor.pos.x + dx, cursor.pos.y);
     }
-    for (int8_t dy = -brushSize; dy < brushSize + 1; ++dy)
+    for (int8_t dy = -offsetBrushSize; dy < offsetBrushSize; ++dy)
     {
         makeDirty(cursor.pos.x, cursor.pos.y + dy);
     }
