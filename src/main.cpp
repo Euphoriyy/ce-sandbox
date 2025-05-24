@@ -43,6 +43,10 @@ int main(void)
         }
         render();
 
+        // Clear dirty arrays at the end of each frame
+        memset(dirtyFlags, 0, TOTAL_PIXELS);
+        memset(dirtyRows, 0, HEIGHT);
+
         currentTick = timer_GetSafe(1, TIMER_UP);
         frametime = (currentTick - lastTick) * 1000 / 32768;
         lastTick = currentTick;

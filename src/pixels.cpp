@@ -9,6 +9,8 @@ const uint16_t TOTAL_PIXELS = WIDTH * HEIGHT;
 uint8_t pixels[TOTAL_PIXELS] = {0};
 bool activeFlags[TOTAL_PIXELS] = {0};
 bool activeRows[HEIGHT] = {0};
+bool dirtyFlags[TOTAL_PIXELS] = {0};
+bool dirtyRows[HEIGHT] = {0};
 uint16_t activeCount = 0;
 uint16_t lastUpdate[TOTAL_PIXELS];
 uint16_t yOffsets[HEIGHT];
@@ -27,6 +29,7 @@ void setPixel(uint8_t x, uint8_t y, uint8_t mat)
                 ++activeCount; // Increment active count if the new mat is non-zero
             else if (prevMat != 0 && mat == 0)
                 --activeCount; // Decrement active count if it is zero
+            makeDirty(x, y);
             pixels[IDX(x, y)] = mat;
         }
 
@@ -56,5 +59,13 @@ void setPixel(uint8_t x, uint8_t y, uint8_t mat)
                     lastUpdate[IDX(nx, ny)] = frame;
             }
         }
+    }
+}
+
+void makeDirty(uint8_t x, uint8_t y)
+{
+    if (IN_BOUNDS(x, y)) {
+        dirtyFlags[IDX(x, y)] = true;
+        dirtyRows[y] = true;
     }
 }

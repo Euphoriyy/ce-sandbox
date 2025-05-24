@@ -5,18 +5,24 @@ constexpr bool isBlackBackground() { return !materialShades[0][0]; }
 
 void render()
 {
-    if (isImageBackground())
-        gfx_ScaledSprite_NoClip(background_1, 0, 0, 8, 8);
-    else if (isBlackBackground())
-        gfx_ZeroScreen();
-    else
-        gfx_FillScreen(materialShades[0][0]);
+    // If empty, draw background
+    if (!activeCount)
+    {
+        if (isImageBackground())
+            gfx_ScaledSprite_NoClip(background_1, 0, 0, 8, 8);
+        else if (isBlackBackground())
+            gfx_ZeroScreen();
+        else
+            gfx_FillScreen(materialShades[0][0]);
+    }
+    else // Otherwise, copy previous frame
+        gfx_BlitScreen();
 
     // Draw Pixels
     for (uint8_t y = 0; activeCount && y < HEIGHT; ++y)
     {
-        // Skip inactive rows
-        if (!activeRows[y])
+        // Skip static rows
+        if (!dirtyRows[y])
             continue;
 
         uint8_t scaledY = y * SCALE_FACTOR + GUI_HEIGHT;
@@ -25,18 +31,20 @@ void render()
 
         for (uint8_t x = 0; x < WIDTH; ++x)
         {
-            // Do not draw if pixel is not flagged as active
-            if (!activeFlags[IDX(x, y)])
+            // Do not draw if pixel is not flagged as dirty
+            if (!dirtyFlags[IDX(x, y)])
                 continue;
 
             uint8_t mat = getPixel(x, y);
 
-            if (mat)
+            if (mat) // Fill non-empty pixels
             {
                 uint8_t runStart = x, runEnd = x;
 
-                // Find the end of the contiguous run with the same mat and an active flag
-                for (int i = x + 1; i < WIDTH && activeFlags[IDX(i, y)] && getPixel(i, y) == mat;
+                // Find the end of the contiguous run with the same mat, an active flag, and a dirty
+                // flag
+                for (int i = x + 1; i < WIDTH && activeFlags[IDX(i, y)] && dirtyFlags[IDX(i, y)] &&
+                                    getPixel(i, y) == mat;
                      ++i)
                 {
                     runEnd = i;
@@ -50,11 +58,39 @@ void render()
                         ? gcd(GFX_LCD_WIDTH, SCALE_FACTOR)
                         : 0;
 
-                // Set color to material shade
+                // Set color to the material shade
                 bool yDivisible = (y * 0xAAAAAAABULL >> 33) * 3 == y;
                 uint8_t shadeIndex = ((yDivisible ? 2 : 1) & -(y & 1));
                 uint8_t shade = materialShades[mat][shadeIndex];
                 gfx_SetColor(shade ? shade : materialShades[mat][0]);
+
+                // Fill a single rectangle for the whole contiguous run
+                gfx_FillRectangle_NoClip(runStart * SCALE_FACTOR, scaledY, runWidth + xScaleOffset,
+                                         SCALE_FACTOR + yScaleOffset);
+
+                x = runEnd; // Advance x to skip this run
+            }
+            else // Clear empty pixels
+            {
+                uint8_t runStart = x, runEnd = x;
+
+                // Find the end of the contiguous run without an active flag and with a dirty flag
+                for (int i = x + 1; i < WIDTH && !activeFlags[IDX(i, y)] && dirtyFlags[IDX(i, y)];
+                     ++i)
+                {
+                    runEnd = i;
+                }
+
+                uint8_t runLength = runEnd - runStart + 1;
+                uint16_t runWidth = runLength * SCALE_FACTOR;
+
+                uint8_t xScaleOffset =
+                    (runEnd == WIDTH - 1 && SCALE_FACTOR != gcd(GFX_LCD_WIDTH, SCALE_FACTOR))
+                        ? gcd(GFX_LCD_WIDTH, SCALE_FACTOR)
+                        : 0;
+
+                // Set color to the material shade
+                gfx_SetColor(materialShades[0][0]);
 
                 // Fill a single rectangle for the whole contiguous run
                 gfx_FillRectangle_NoClip(runStart * SCALE_FACTOR, scaledY, runWidth + xScaleOffset,
@@ -143,7 +179,7 @@ void mainMenu()
     gfx_SetTextTransparentColor(0);
     gfx_SetTextScale(1, 1);
     gfx_PrintStringXY("Press Any Key", GFX_LCD_WIDTH / 5, 170);
-    
+
     gfx_SwapDraw();
 
     while (!os_GetCSC())

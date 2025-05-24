@@ -14,6 +14,8 @@ extern const uint16_t TOTAL_PIXELS;
 extern uint8_t pixels[];
 extern bool activeFlags[];
 extern bool activeRows[];
+extern bool dirtyFlags[];
+extern bool dirtyRows[];
 extern uint16_t activeCount;
 extern uint16_t lastUpdate[];
 extern uint16_t yOffsets[];
@@ -22,4 +24,5 @@ extern uint16_t yOffsets[];
 #define IN_BOUNDS(x, y) ((x) < WIDTH && (y) < HEIGHT)
 
 uint8_t getPixel(uint8_t x, uint8_t y);
+void makeDirty(uint8_t x, uint8_t y);
 void setPixel(uint8_t x, uint8_t y, uint8_t color);

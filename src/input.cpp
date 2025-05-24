@@ -7,17 +7,33 @@ void handleInput()
         memset(pixels, 0, TOTAL_PIXELS);
         memset(activeFlags, 0, TOTAL_PIXELS);
         memset(activeRows, 0, HEIGHT);
+        memset(dirtyFlags, 0, TOTAL_PIXELS);
+        memset(dirtyRows, 0, HEIGHT);
         memset(lastUpdate, 0, TOTAL_PIXELS * sizeof(uint16_t));
         activeCount = 0;
+        frame = 0;
     }
+
     if (kb_IsDown(kb_KeyRight) && cursor.pos.x < WIDTH - 1)
+    {
+        clearCursor();
         ++cursor.pos.x;
+    }
     if (kb_IsDown(kb_KeyLeft) && cursor.pos.x > 0)
+    {
+        clearCursor();
         --cursor.pos.x;
+    }
     if (kb_IsDown(kb_KeyDown) && cursor.pos.y < HEIGHT - 1)
+    {
+        clearCursor();
         ++cursor.pos.y;
+    }
     if (kb_IsDown(kb_KeyUp) && cursor.pos.y > 0)
+    {
+        clearCursor();
         --cursor.pos.y;
+    }
 
     // Get current key state
     keyState.cur.enter = kb_IsDown(kb_KeyEnter);
@@ -63,12 +79,22 @@ void handleInput()
 
     // Increase Brush Size
     if (keyState.cur.window && !keyState.prev.window)
+    {
         if (brushSize > 1)
+        {
+            clearCursor();
             --brushSize;
+        }
+    }
 
     if (keyState.cur.trace && !keyState.prev.trace)
+    {
         if (brushSize < 10)
+        {
+            clearCursor();
             ++brushSize;
+        }
+    }
 
     // Switch palette
     if (keyState.cur.yequ && !keyState.prev.yequ)
