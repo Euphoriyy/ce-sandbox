@@ -1,4 +1,3 @@
-#include <graphx.h>
 #include <sys/rtc.h>
 #include <sys/timers.h>
 
@@ -37,16 +36,12 @@ int main(void)
         kb_Scan();
         handleInput();
 
-        asm volatile("di");
-        
-        render();
         if (activeCount && !isPaused)
         {
             update();
             ++frame;
         }
-        
-        asm volatile("ei");
+        render();
 
         currentTick = timer_GetSafe(1, TIMER_UP);
         frametime = (currentTick - lastTick) * 1000 / 32768;
