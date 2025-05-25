@@ -19,6 +19,7 @@ extern bool dirtyRows[];
 extern uint16_t activeCount;
 extern uint16_t lastUpdate[];
 extern uint16_t yOffsets[];
+extern uint8_t bgColorCells[];
 
 #define IDX(x, y) (yOffsets[y] + (x))
 #define IN_BOUNDS(x, y) ((x) < WIDTH && (y) < HEIGHT)

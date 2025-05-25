@@ -14,6 +14,7 @@ bool dirtyRows[HEIGHT] = {0};
 uint16_t activeCount = 0;
 uint16_t lastUpdate[TOTAL_PIXELS];
 uint16_t yOffsets[HEIGHT];
+uint8_t bgColorCells[TOTAL_PIXELS];
 
 uint8_t getPixel(uint8_t x, uint8_t y) { return IN_BOUNDS(x, y) ? pixels[IDX(x, y)] : 0; }
 
@@ -64,7 +65,8 @@ void setPixel(uint8_t x, uint8_t y, uint8_t mat)
 
 void makeDirty(uint8_t x, uint8_t y)
 {
-    if (IN_BOUNDS(x, y)) {
+    if (IN_BOUNDS(x, y))
+    {
         dirtyFlags[IDX(x, y)] = true;
         dirtyRows[y] = true;
     }

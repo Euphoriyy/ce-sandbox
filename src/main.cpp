@@ -31,6 +31,8 @@ int main(void)
     timer_Set(1, 0);
     uint16_t lastTick = timer_GetSafe(1, TIMER_UP), currentTick;
 
+    precomputeBgColors();
+
     while (!kb_IsDown(kb_KeyMode))
     {
         kb_Scan();

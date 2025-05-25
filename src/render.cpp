@@ -18,6 +18,12 @@ void render()
     else // Otherwise, copy previous frame
         gfx_BlitScreen();
 
+    if (isImageBackground() && frame == 1)
+    {
+        memset(dirtyFlags, 1, TOTAL_PIXELS);
+        memset(dirtyRows, 1, HEIGHT);
+    }
+
     // Draw Pixels
     for (uint8_t y = 0; activeCount && y < HEIGHT; ++y)
     {
@@ -69,6 +75,17 @@ void render()
                                          SCALE_FACTOR + yScaleOffset);
 
                 x = runEnd; // Advance x to skip this run
+            }
+            else if (isImageBackground()) // Replace empty pixels with image background
+            {
+                uint8_t xScaleOffset =
+                    (x == WIDTH - 1 && SCALE_FACTOR != gcd(GFX_LCD_WIDTH, SCALE_FACTOR))
+                        ? gcd(GFX_LCD_WIDTH, SCALE_FACTOR)
+                        : 0;
+                uint8_t color = bgColorCells[IDX(x, y)];
+                gfx_SetColor(color);
+                gfx_FillRectangle_NoClip(x * SCALE_FACTOR, scaledY, SCALE_FACTOR + xScaleOffset,
+                                         SCALE_FACTOR + yScaleOffset);
             }
             else // Clear empty pixels
             {
@@ -184,5 +201,27 @@ void mainMenu()
 
     while (!os_GetCSC())
     {
+    }
+}
+
+void precomputeBgColors()
+{
+    for (uint8_t y = 0; y < HEIGHT; ++y)
+    {
+        uint16_t screenY = y * SCALE_FACTOR + SCALE_FACTOR / 2 + GUI_HEIGHT;
+        uint8_t bgY = screenY * background_1_height / GFX_LCD_HEIGHT;
+        if (bgY >= background_1_height)
+            bgY = background_1_height - 1;
+
+        for (uint8_t x = 0; x < WIDTH; ++x)
+        {
+            uint16_t screenX = x * SCALE_FACTOR + SCALE_FACTOR / 2;
+            uint8_t bgX = screenX * background_1_width / GFX_LCD_WIDTH;
+            if (bgX >= background_1_width)
+                bgX = background_1_width - 1;
+
+            uint8_t color = background_1_data[bgY * background_1_width + bgX];
+            bgColorCells[IDX(x, y)] = color;
+        }
     }
 }
