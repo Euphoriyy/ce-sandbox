@@ -121,11 +121,13 @@ void render()
     // Draw Cursor
     gfx_SetColor(cursor.color);
     // A brush size of 2 otherwise causes the cursor to be off-center
-    uint16_t cx = cursor.pos.x * cursor.size + cursor.size / (2 * brushSize) - (brushSize == 2);
-    uint16_t cy =
-        cursor.pos.y * cursor.size + GUI_HEIGHT + cursor.size / (2 * brushSize) - (brushSize == 2);
-    gfx_HorizLine(cx - cursor.size * brushSize, cy, cursor.size * 2 * brushSize);
-    gfx_VertLine(cx, cy - cursor.size * brushSize, cursor.size * 2 * brushSize);
+    uint16_t cx = cursor.pos.x * cursor.size + cursor.size / (2 * gameState.brushSize) -
+                  (gameState.brushSize == 2);
+    uint16_t cy = cursor.pos.y * cursor.size + GUI_HEIGHT +
+                  cursor.size / (2 * gameState.brushSize) - (gameState.brushSize == 2);
+    gfx_HorizLine(cx - cursor.size * gameState.brushSize, cy,
+                  cursor.size * 2 * gameState.brushSize);
+    gfx_VertLine(cx, cy - cursor.size * gameState.brushSize, cursor.size * 2 * gameState.brushSize);
 
     // Draw GUI
     gfx_SetColor(50);
@@ -136,9 +138,9 @@ void render()
     gfx_SetTextXY(10, 3);
     gfx_SetTextScale(1, 1);
 
-    if (isDrawing)
+    if (gameState.isDrawing)
         gfx_PrintString("DRAWING:");
-    else if (isErasing)
+    else if (gameState.isErasing)
         gfx_PrintString("ERASING");
     else
         gfx_PrintString("IDLE");
@@ -170,7 +172,7 @@ void render()
 
     gfx_PrintStringXY("SZ:", 135, 3);
     gfx_SetTextXY(158, 3);
-    gfx_PrintUInt(brushSize, 1);
+    gfx_PrintUInt(gameState.brushSize, 1);
 
     gfx_PrintStringXY("FT:", 180, 3);
     gfx_SetTextXY(205, 3);

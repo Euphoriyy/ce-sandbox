@@ -48,29 +48,29 @@ void handleInput()
     // Toggle Drawing Mode
     if (keyState.cur.enter && !keyState.prev.enter)
     {
-        isDrawing = !isDrawing;
-        if (isDrawing)
-            isErasing = false;
+        gameState.isDrawing = !gameState.isDrawing;
+        if (gameState.isDrawing)
+            gameState.isErasing = false;
     }
 
     // Toggle Erasing Mode
     if (keyState.cur.del && !keyState.prev.del)
     {
-        isErasing = !isErasing;
-        if (isErasing)
-            isDrawing = false;
+        gameState.isErasing = !gameState.isErasing;
+        if (gameState.isErasing)
+            gameState.isDrawing = false;
     }
 
     // Toggle Pausing
     if (keyState.cur.second && !keyState.prev.second)
-        isPaused = !isPaused;
+        gameState.isPaused = !gameState.isPaused;
 
     // Toggle Floor
     if (keyState.cur.zoom && !keyState.prev.zoom)
     {
-        enableFloor = !enableFloor;
+        gameState.enableFloor = !gameState.enableFloor;
         // Update the last row after disabling the floor
-        if (!enableFloor && activeRows[HEIGHT - 1])
+        if (!gameState.enableFloor && activeRows[HEIGHT - 1])
         {
             for (uint8_t x = 0; x < WIDTH; ++x)
                 lastUpdate[IDX(x, HEIGHT - 1)] = timing.frame;
@@ -80,19 +80,19 @@ void handleInput()
     // Increase Brush Size
     if (keyState.cur.window && !keyState.prev.window)
     {
-        if (brushSize > 1)
+        if (gameState.brushSize > 1)
         {
             clearCursor();
-            --brushSize;
+            --gameState.brushSize;
         }
     }
 
     if (keyState.cur.trace && !keyState.prev.trace)
     {
-        if (brushSize < 10)
+        if (gameState.brushSize < 10)
         {
             clearCursor();
-            ++brushSize;
+            ++gameState.brushSize;
         }
     }
 
@@ -113,18 +113,20 @@ void handleInput()
     }
 
     // Draw or erase based on current mode
-    if (isDrawing)
+    if (gameState.isDrawing)
     {
-        if (brushSize == 1)
+        if (gameState.brushSize == 1)
         {
             if (!getPixel(cursor.pos.x, cursor.pos.y))
                 setPixel(cursor.pos.x, cursor.pos.y, palette[cursor.paletteIndex]);
         }
-        else if (brushSize > 1)
+        else if (gameState.brushSize > 1)
         {
-            for (int8_t dy = -brushSize / 2; dy < brushSize / 2 + (brushSize & 1); ++dy)
+            for (int8_t dy = -gameState.brushSize / 2;
+                 dy < gameState.brushSize / 2 + (gameState.brushSize & 1); ++dy)
             {
-                for (int8_t dx = -brushSize / 2; dx < brushSize / 2 + (brushSize & 1); ++dx)
+                for (int8_t dx = -gameState.brushSize / 2;
+                     dx < gameState.brushSize / 2 + (gameState.brushSize & 1); ++dx)
                 {
                     uint8_t x = cursor.pos.x + dx, y = cursor.pos.y + dy;
                     if (IN_BOUNDS(x, y) && !getPixel(x, y))
@@ -133,18 +135,20 @@ void handleInput()
             }
         }
     }
-    else if (isErasing)
+    else if (gameState.isErasing)
     {
-        if (brushSize == 1)
+        if (gameState.brushSize == 1)
         {
             if (getPixel(cursor.pos.x, cursor.pos.y))
                 setPixel(cursor.pos.x, cursor.pos.y, 0);
         }
-        else if (brushSize > 1)
+        else if (gameState.brushSize > 1)
         {
-            for (int8_t dy = -brushSize / 2; dy < brushSize / 2 + (brushSize & 1); ++dy)
+            for (int8_t dy = -gameState.brushSize / 2;
+                 dy < gameState.brushSize / 2 + (gameState.brushSize & 1); ++dy)
             {
-                for (int8_t dx = -brushSize / 2; dx < brushSize / 2 + (brushSize & 1); ++dx)
+                for (int8_t dx = -gameState.brushSize / 2;
+                     dx < gameState.brushSize / 2 + (gameState.brushSize & 1); ++dx)
                 {
                     uint8_t x = cursor.pos.x + dx, y = cursor.pos.y + dy;
                     if (IN_BOUNDS(x, y) && getPixel(x, y))

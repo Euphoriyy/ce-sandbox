@@ -3,12 +3,11 @@
 Cursor cursor;
 Timing timing;
 KeyState keyState;
-bool isDrawing = false, isErasing = false, isPaused = false, enableFloor = true;
-uint8_t brushSize = 1;
+GameState gameState;
 
 void clearCursor()
 {
-    uint8_t offsetBrushSize = brushSize + 1;
+    uint8_t offsetBrushSize = gameState.brushSize + 1;
     for (int8_t dx = -offsetBrushSize; dx < offsetBrushSize; ++dx)
     {
         makeDirty(cursor.pos.x + dx, cursor.pos.y);

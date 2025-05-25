@@ -3,16 +3,14 @@
 #include "math.h"
 #include "pixels.h"
 
-struct Keys
-{
-    bool enter = false, del = false, yequ = false, graph = false, second = false, zoom = false,
-         window = false, trace = false;
-};
-
 struct KeyState
 {
-    Keys prev;
-    Keys cur;
+    struct Keys
+    {
+        bool enter = false, del = false, yequ = false, graph = false, second = false, zoom = false,
+             window = false, trace = false;
+    };
+    Keys prev, cur;
 };
 
 struct Cursor
@@ -27,6 +25,12 @@ struct Timing
 {
     uint16_t frame = 0;
     uint8_t frametime = 0;
+};
+
+struct GameState
+{
+    bool isDrawing = false, isErasing = false, isPaused = false, enableFloor = true;
+    uint8_t brushSize = 1;
 };
 
 enum Material
@@ -49,7 +53,6 @@ const uint8_t paletteLen = sizeof(palette);
 extern Cursor cursor;
 extern Timing timing;
 extern KeyState keyState;
-extern bool isDrawing, isErasing, isPaused, enableFloor;
-extern uint8_t brushSize;
+extern GameState gameState;
 
 void clearCursor();

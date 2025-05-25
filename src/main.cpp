@@ -38,7 +38,7 @@ int main(void)
         kb_Scan();
         handleInput();
 
-        if (activeCount && !isPaused)
+        if (activeCount && !gameState.isPaused)
         {
             update();
             ++timing.frame;

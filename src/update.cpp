@@ -36,7 +36,7 @@ void update()
 
 void updateSand(uint8_t x, uint8_t y)
 {
-    if (enableFloor && y == HEIGHT - 1)
+    if (gameState.enableFloor && y == HEIGHT - 1)
         return;
     // If down is empty
     if (!getPixel(x, y + 1))
@@ -63,7 +63,7 @@ void updateSand(uint8_t x, uint8_t y)
 
 void updateWater(uint8_t x, uint8_t y)
 {
-    if (enableFloor && y == HEIGHT - 1)
+    if (gameState.enableFloor && y == HEIGHT - 1)
         return;
     // If down is empty
     if (!getPixel(x, y + 1))
@@ -95,7 +95,7 @@ void updateWater(uint8_t x, uint8_t y)
 
 void updateDirt(uint8_t x, uint8_t y)
 {
-    if (enableFloor && y == HEIGHT - 1)
+    if (gameState.enableFloor && y == HEIGHT - 1)
         return;
     // If down is empty
     if (!getPixel(x, y + 1))
@@ -122,7 +122,7 @@ void updateDirt(uint8_t x, uint8_t y)
 
 void updateAcid(uint8_t x, uint8_t y)
 {
-    if (enableFloor && y == HEIGHT - 1)
+    if (gameState.enableFloor && y == HEIGHT - 1)
         return;
     // If down is empty
     if (!getPixel(x, y + 1))
