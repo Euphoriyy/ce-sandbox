@@ -4,5 +4,6 @@
 #include <string.h>
 
 #include "pixels.h"
+#include "draw.h"
 
 void handleInput();

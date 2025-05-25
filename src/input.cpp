@@ -121,17 +121,7 @@ void handleInput()
         }
         else if (gameState.brushSize > 1)
         {
-            for (int8_t dy = -gameState.brushSize / 2;
-                 dy < gameState.brushSize / 2 + (gameState.brushSize & 1); ++dy)
-            {
-                for (int8_t dx = -gameState.brushSize / 2;
-                     dx < gameState.brushSize / 2 + (gameState.brushSize & 1); ++dx)
-                {
-                    uint8_t x = cursor.pos.x + dx, y = cursor.pos.y + dy;
-                    if (IN_BOUNDS(x, y) && !getPixel(x, y))
-                        setPixel(x, y, palette[cursor.paletteIndex]);
-                }
-            }
+            drawSquare(cursor.pos, gameState.brushSize, palette[cursor.paletteIndex]);
         }
     }
     else if (gameState.isErasing)
@@ -139,21 +129,11 @@ void handleInput()
         if (gameState.brushSize == 1)
         {
             if (getPixel(cursor.pos.x, cursor.pos.y))
-                setPixel(cursor.pos.x, cursor.pos.y, 0);
+                setPixel(cursor.pos.x, cursor.pos.y, Material::Empty);
         }
         else if (gameState.brushSize > 1)
         {
-            for (int8_t dy = -gameState.brushSize / 2;
-                 dy < gameState.brushSize / 2 + (gameState.brushSize & 1); ++dy)
-            {
-                for (int8_t dx = -gameState.brushSize / 2;
-                     dx < gameState.brushSize / 2 + (gameState.brushSize & 1); ++dx)
-                {
-                    uint8_t x = cursor.pos.x + dx, y = cursor.pos.y + dy;
-                    if (IN_BOUNDS(x, y) && getPixel(x, y))
-                        setPixel(x, y, 0);
-                }
-            }
+            drawSquare(cursor.pos, gameState.brushSize, Material::Empty);
         }
     }
 
