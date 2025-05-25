@@ -19,7 +19,7 @@ struct Pixels
     bool dirtyFlags[TOTAL_PIXELS] = {0};
     bool dirtyRows[HEIGHT] = {0};
     uint16_t activeCount = 0;
-    uint16_t lastUpdate[TOTAL_PIXELS];
+    uint16_t lastUpdateByRow[HEIGHT];
     uint16_t yOffsets[HEIGHT];
     uint8_t bgColorCells[TOTAL_PIXELS];
 };

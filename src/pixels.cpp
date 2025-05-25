@@ -36,15 +36,13 @@ void setPixel(uint8_t x, uint8_t y, uint8_t mat)
             }
             pixelData.activeRows[y] = rowActive;
         }
-        // When a pixel is updated, change the updated status of itself and its adjacent pixels
+
+        // When a pixel is updated, change the updated status of its row and its adjacent rows
         for (int8_t dy = -1; dy <= 1; ++dy)
         {
-            for (int8_t dx = -1; dx <= 1; ++dx)
-            {
-                uint8_t nx = x + dx, ny = y + dy;
-                if (IN_BOUNDS(nx, ny))
-                    pixelData.lastUpdate[IDX(nx, ny)] = timing.frame;
-            }
+            uint8_t ny = y + dy;
+            if (pixelData.activeRows[ny])
+                pixelData.lastUpdateByRow[ny] = timing.frame;
         }
     }
 }
