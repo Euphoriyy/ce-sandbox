@@ -119,7 +119,17 @@ void render()
         }
     }
 
-    // Draw Cursor
+    drawCursor();
+
+    drawGUI();
+
+    // --------------
+
+    gfx_SwapDraw();
+}
+
+void drawCursor()
+{
     gfx_SetColor(cursor.color);
     // A brush size of 2 otherwise causes the cursor to be off-center
     uint16_t cx = cursor.pos.x * cursor.size + cursor.size / (2 * gameState.brushSize) -
@@ -129,8 +139,10 @@ void render()
     gfx_HorizLine(cx - cursor.size * gameState.brushSize, cy,
                   cursor.size * 2 * gameState.brushSize);
     gfx_VertLine(cx, cy - cursor.size * gameState.brushSize, cursor.size * 2 * gameState.brushSize);
+}
 
-    // Draw GUI
+void drawGUI()
+{
     gfx_SetColor(50);
     gfx_FillRectangle_NoClip(0, 0, GFX_LCD_WIDTH, GUI_HEIGHT);
     gfx_SetTextFGColor(255);
@@ -182,10 +194,6 @@ void render()
     gfx_PrintStringXY("PARTS:", 230, 3);
     gfx_SetTextXY(281, 3);
     gfx_PrintUInt(pixelData.activeCount, 1);
-
-    // --------------
-
-    gfx_SwapDraw();
 }
 
 void mainMenu()
