@@ -152,9 +152,9 @@ void drawGUI()
     gfx_SetTextScale(1, 1);
 
     if (gameState.isDrawing)
-        gfx_PrintString("DRAWING:");
+        gfx_PrintString("DRAW");
     else if (gameState.isErasing)
-        gfx_PrintString("ERASING");
+        gfx_PrintString("ERASE");
     else
         gfx_PrintString("IDLE");
 
