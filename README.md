@@ -13,6 +13,7 @@ The controls for the game are the following:
 | Move Cursor         | <kbd>up/down/left/right</kbd> |
 | Toggle Drawing      | <kbd>enter             </kbd> |
 | Toggle Erasing      | <kbd>del               </kbd> |
+| Toggle Circle Brush | <kbd>xton              </kbd> |
 | Pause Game          | <kbd>2nd               </kbd> |
 | Previous Material   | <kbd>y=                </kbd> |
 | Next Material       | <kbd>graph             </kbd> |

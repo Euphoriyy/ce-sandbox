@@ -166,9 +166,18 @@ void drawGUI()
     }
 
     gfx_SetColor(0);
-    gfx_FillRectangle_NoClip(72, 2, 8, 8);
-    gfx_SetColor(materialShades[palette[cursor.paletteIndex]][0]);
-    gfx_FillRectangle_NoClip(73, 3, 6, 6);
+    if (gameState.circleBrush)
+    {
+        gfx_FillCircle_NoClip(75, 6, 4);
+        gfx_SetColor(materialShades[palette[cursor.paletteIndex]][0]);
+        gfx_FillCircle_NoClip(75, 6, 3);
+    }
+    else
+    {
+        gfx_FillRectangle_NoClip(72, 2, 8, 8);
+        gfx_SetColor(materialShades[palette[cursor.paletteIndex]][0]);
+        gfx_FillRectangle_NoClip(73, 3, 6, 6);
+    }
     gfx_SetTextXY(82, 3);
 
     switch (palette[cursor.paletteIndex])

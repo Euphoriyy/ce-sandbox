@@ -8,7 +8,7 @@ struct KeyState
     struct Keys
     {
         bool enter = false, del = false, yequ = false, graph = false, second = false, zoom = false,
-             window = false, trace = false;
+             window = false, trace = false, graphVar = false;
     };
     Keys prev, cur;
 };
@@ -29,7 +29,8 @@ struct Timing
 
 struct GameState
 {
-    bool isDrawing = false, isErasing = false, isPaused = false, enableFloor = true;
+    bool isDrawing = false, isErasing = false, isPaused = false, enableFloor = true,
+         circleBrush = true;
     uint8_t brushSize = 1;
 };
 

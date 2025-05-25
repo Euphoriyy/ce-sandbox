@@ -44,6 +44,7 @@ void handleInput()
     keyState.cur.zoom = kb_IsDown(kb_KeyZoom);
     keyState.cur.window = kb_IsDown(kb_KeyWindow);
     keyState.cur.trace = kb_IsDown(kb_KeyTrace);
+    keyState.cur.graphVar = kb_IsDown(kb_KeyGraphVar);
 
     // Toggle Drawing Mode
     if (keyState.cur.enter && !keyState.prev.enter)
@@ -61,6 +62,10 @@ void handleInput()
             gameState.isDrawing = false;
     }
 
+    // Toggle Circular Brush
+    if (keyState.cur.graphVar && !keyState.prev.graphVar)
+        gameState.circleBrush = !gameState.circleBrush;
+
     // Toggle Pausing
     if (keyState.cur.second && !keyState.prev.second)
         gameState.isPaused = !gameState.isPaused;
@@ -77,21 +82,22 @@ void handleInput()
     }
 
     // Increase Brush Size
-    if (keyState.cur.window && !keyState.prev.window)
-    {
-        if (gameState.brushSize > 1)
-        {
-            clearCursor();
-            --gameState.brushSize;
-        }
-    }
-
     if (keyState.cur.trace && !keyState.prev.trace)
     {
         if (gameState.brushSize < 10)
         {
             clearCursor();
             ++gameState.brushSize;
+        }
+    }
+
+    // Decrease Brush Size
+    if (keyState.cur.window && !keyState.prev.window)
+    {
+        if (gameState.brushSize > 1)
+        {
+            clearCursor();
+            --gameState.brushSize;
         }
     }
 
@@ -121,7 +127,10 @@ void handleInput()
         }
         else if (gameState.brushSize > 1)
         {
-            drawSquare(cursor.pos, gameState.brushSize, palette[cursor.paletteIndex]);
+            if (gameState.circleBrush)
+                drawCircle(cursor.pos, gameState.brushSize, palette[cursor.paletteIndex]);
+            else
+                drawSquare(cursor.pos, gameState.brushSize, palette[cursor.paletteIndex]);
         }
     }
     else if (gameState.isErasing)
@@ -133,7 +142,10 @@ void handleInput()
         }
         else if (gameState.brushSize > 1)
         {
-            drawSquare(cursor.pos, gameState.brushSize, Material::Empty);
+            if (gameState.circleBrush)
+                drawCircle(cursor.pos, gameState.brushSize, Material::Empty);
+            else
+                drawSquare(cursor.pos, gameState.brushSize, Material::Empty);
         }
     }
 
