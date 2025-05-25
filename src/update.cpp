@@ -4,14 +4,14 @@ void update()
 {
     for (uint8_t y = HEIGHT - 1, x; y != 0xFF; --y)
     {
-        if (!activeRows[y])
+        if (!pixelData.activeRows[y])
             continue;
         bool flip = randInt(0, 1);
         for (x = (flip ? 0 : WIDTH - 1); flip ? x < WIDTH : x != 0xFF; x += (flip ? 1 : -1))
         {
             uint16_t idx = IDX(x, y);
             // Only update if the pixel is active and it was updated within the last 5 frames
-            if (activeFlags[idx] && timing.frame - lastUpdate[idx] < 5)
+            if (pixelData.activeFlags[idx] && timing.frame - pixelData.lastUpdate[idx] < 5)
             {
                 uint8_t mat = getPixel(x, y);
                 switch (mat)

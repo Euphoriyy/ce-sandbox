@@ -6,7 +6,7 @@ constexpr bool isBlackBackground() { return !materialShades[0][0]; }
 void render()
 {
     // If empty, draw background
-    if (!activeCount)
+    if (!pixelData.activeCount)
     {
         if (isImageBackground())
             gfx_ScaledSprite_NoClip(background_1, 0, 0, 8, 8);
@@ -20,15 +20,15 @@ void render()
 
     if (isImageBackground() && timing.frame == 1)
     {
-        memset(dirtyFlags, 1, TOTAL_PIXELS);
-        memset(dirtyRows, 1, HEIGHT);
+        memset(pixelData.dirtyFlags, 1, TOTAL_PIXELS);
+        memset(pixelData.dirtyRows, 1, HEIGHT);
     }
 
     // Draw Pixels
-    for (uint8_t y = 0; activeCount && y < HEIGHT; ++y)
+    for (uint8_t y = 0; pixelData.activeCount && y < HEIGHT; ++y)
     {
         // Skip static rows
-        if (!dirtyRows[y])
+        if (!pixelData.dirtyRows[y])
             continue;
 
         uint8_t scaledY = y * SCALE_FACTOR + GUI_HEIGHT;
@@ -38,7 +38,7 @@ void render()
         for (uint8_t x = 0; x < WIDTH; ++x)
         {
             // Do not draw if pixel is not flagged as dirty
-            if (!dirtyFlags[IDX(x, y)])
+            if (!pixelData.dirtyFlags[IDX(x, y)])
                 continue;
 
             uint8_t mat = getPixel(x, y);
@@ -49,8 +49,8 @@ void render()
 
                 // Find the end of the contiguous run with the same mat, an active flag, and a dirty
                 // flag
-                for (int i = x + 1; i < WIDTH && activeFlags[IDX(i, y)] && dirtyFlags[IDX(i, y)] &&
-                                    getPixel(i, y) == mat;
+                for (int i = x + 1; i < WIDTH && pixelData.activeFlags[IDX(i, y)] &&
+                                    pixelData.dirtyFlags[IDX(i, y)] && getPixel(i, y) == mat;
                      ++i)
                 {
                     runEnd = i;
@@ -82,7 +82,7 @@ void render()
                     (x == WIDTH - 1 && SCALE_FACTOR != gcd(GFX_LCD_WIDTH, SCALE_FACTOR))
                         ? gcd(GFX_LCD_WIDTH, SCALE_FACTOR)
                         : 0;
-                uint8_t color = bgColorCells[IDX(x, y)];
+                uint8_t color = pixelData.bgColorCells[IDX(x, y)];
                 gfx_SetColor(color);
                 gfx_FillRectangle_NoClip(x * SCALE_FACTOR, scaledY, SCALE_FACTOR + xScaleOffset,
                                          SCALE_FACTOR + yScaleOffset);
@@ -92,7 +92,8 @@ void render()
                 uint8_t runStart = x, runEnd = x;
 
                 // Find the end of the contiguous run without an active flag and with a dirty flag
-                for (int i = x + 1; i < WIDTH && !activeFlags[IDX(i, y)] && dirtyFlags[IDX(i, y)];
+                for (int i = x + 1; i < WIDTH && !pixelData.activeFlags[IDX(i, y)] &&
+                                    pixelData.dirtyFlags[IDX(i, y)];
                      ++i)
                 {
                     runEnd = i;
@@ -180,7 +181,7 @@ void render()
 
     gfx_PrintStringXY("PARTS:", 230, 3);
     gfx_SetTextXY(281, 3);
-    gfx_PrintUInt(activeCount, 1);
+    gfx_PrintUInt(pixelData.activeCount, 1);
 
     // --------------
 
@@ -223,7 +224,7 @@ void precomputeBgColors()
                 bgX = background_1_width - 1;
 
             uint8_t color = background_1_data[bgY * background_1_width + bgX];
-            bgColorCells[IDX(x, y)] = color;
+            pixelData.bgColorCells[IDX(x, y)] = color;
         }
     }
 }

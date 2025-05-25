@@ -4,13 +4,13 @@ void handleInput()
 {
     if (kb_IsDown(kb_KeyClear))
     {
-        memset(pixels, 0, TOTAL_PIXELS);
-        memset(activeFlags, 0, TOTAL_PIXELS);
-        memset(activeRows, 0, HEIGHT);
-        memset(dirtyFlags, 0, TOTAL_PIXELS);
-        memset(dirtyRows, 0, HEIGHT);
-        memset(lastUpdate, 0, TOTAL_PIXELS * sizeof(uint16_t));
-        activeCount = 0;
+        memset(pixelData.pixels, 0, TOTAL_PIXELS);
+        memset(pixelData.activeFlags, 0, TOTAL_PIXELS);
+        memset(pixelData.activeRows, 0, HEIGHT);
+        memset(pixelData.dirtyFlags, 0, TOTAL_PIXELS);
+        memset(pixelData.dirtyRows, 0, HEIGHT);
+        memset(pixelData.lastUpdate, 0, TOTAL_PIXELS * sizeof(uint16_t));
+        pixelData.activeCount = 0;
         timing.frame = 0;
     }
 
@@ -70,10 +70,10 @@ void handleInput()
     {
         gameState.enableFloor = !gameState.enableFloor;
         // Update the last row after disabling the floor
-        if (!gameState.enableFloor && activeRows[HEIGHT - 1])
+        if (!gameState.enableFloor && pixelData.activeRows[HEIGHT - 1])
         {
             for (uint8_t x = 0; x < WIDTH; ++x)
-                lastUpdate[IDX(x, HEIGHT - 1)] = timing.frame;
+                pixelData.lastUpdate[IDX(x, HEIGHT - 1)] = timing.frame;
         }
     }
 

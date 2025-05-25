@@ -14,7 +14,7 @@ int main(void)
 
     // Precalculate y offsets
     for (uint8_t y = 0; y < HEIGHT; ++y)
-        yOffsets[y] = y * WIDTH;
+        pixelData.yOffsets[y] = y * WIDTH;
 
     // Set cursor size
     cursor.size = SCALE_FACTOR;
@@ -38,7 +38,7 @@ int main(void)
         kb_Scan();
         handleInput();
 
-        if (activeCount && !gameState.isPaused)
+        if (pixelData.activeCount && !gameState.isPaused)
         {
             update();
             ++timing.frame;
@@ -46,8 +46,8 @@ int main(void)
         render();
 
         // Clear dirty arrays at the end of each frame
-        memset(dirtyFlags, 0, TOTAL_PIXELS);
-        memset(dirtyRows, 0, HEIGHT);
+        memset(pixelData.dirtyFlags, 0, TOTAL_PIXELS);
+        memset(pixelData.dirtyRows, 0, HEIGHT);
 
         currentTick = timer_GetSafe(1, TIMER_UP);
         timing.frametime = (currentTick - lastTick) * 1000 / 32768;
