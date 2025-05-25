@@ -57,7 +57,7 @@ void setPixel(uint8_t x, uint8_t y, uint8_t mat)
             {
                 uint8_t nx = x + dx, ny = y + dy;
                 if (IN_BOUNDS(nx, ny))
-                    lastUpdate[IDX(nx, ny)] = frame;
+                    lastUpdate[IDX(nx, ny)] = timing.frame;
             }
         }
     }

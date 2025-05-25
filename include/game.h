@@ -23,6 +23,12 @@ struct Cursor
     uint8_t paletteIndex = 0;
 };
 
+struct Timing
+{
+    uint16_t frame = 0;
+    uint8_t frametime = 0;
+};
+
 enum Material
 {
     Empty,
@@ -41,8 +47,7 @@ const uint8_t palette[] = {Material::Sand, Material::Water, Material::Dirt, Mate
 const uint8_t paletteLen = sizeof(palette);
 
 extern Cursor cursor;
-extern uint16_t frame;
-extern uint8_t frametime;
+extern Timing timing;
 extern KeyState keyState;
 extern bool isDrawing, isErasing, isPaused, enableFloor;
 extern uint8_t brushSize;

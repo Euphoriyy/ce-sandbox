@@ -11,7 +11,7 @@ void update()
         {
             uint16_t idx = IDX(x, y);
             // Only update if the pixel is active and it was updated within the last 5 frames
-            if (activeFlags[idx] && frame - lastUpdate[idx] < 5)
+            if (activeFlags[idx] && timing.frame - lastUpdate[idx] < 5)
             {
                 uint8_t mat = getPixel(x, y);
                 switch (mat)

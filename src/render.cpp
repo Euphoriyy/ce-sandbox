@@ -18,7 +18,7 @@ void render()
     else // Otherwise, copy previous frame
         gfx_BlitScreen();
 
-    if (isImageBackground() && frame == 1)
+    if (isImageBackground() && timing.frame == 1)
     {
         memset(dirtyFlags, 1, TOTAL_PIXELS);
         memset(dirtyRows, 1, HEIGHT);
@@ -174,7 +174,7 @@ void render()
 
     gfx_PrintStringXY("FT:", 180, 3);
     gfx_SetTextXY(205, 3);
-    gfx_PrintUInt(frametime, 2);
+    gfx_PrintUInt(timing.frametime, 2);
 
     gfx_PrintStringXY("PARTS:", 230, 3);
     gfx_SetTextXY(281, 3);

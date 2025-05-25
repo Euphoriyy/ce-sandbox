@@ -41,7 +41,7 @@ int main(void)
         if (activeCount && !isPaused)
         {
             update();
-            ++frame;
+            ++timing.frame;
         }
         render();
 
@@ -50,7 +50,7 @@ int main(void)
         memset(dirtyRows, 0, HEIGHT);
 
         currentTick = timer_GetSafe(1, TIMER_UP);
-        frametime = (currentTick - lastTick) * 1000 / 32768;
+        timing.frametime = (currentTick - lastTick) * 1000 / 32768;
         lastTick = currentTick;
     };
 

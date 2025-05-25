@@ -11,7 +11,7 @@ void handleInput()
         memset(dirtyRows, 0, HEIGHT);
         memset(lastUpdate, 0, TOTAL_PIXELS * sizeof(uint16_t));
         activeCount = 0;
-        frame = 0;
+        timing.frame = 0;
     }
 
     if (kb_IsDown(kb_KeyRight) && cursor.pos.x < WIDTH - 1)
@@ -73,7 +73,7 @@ void handleInput()
         if (!enableFloor && activeRows[HEIGHT - 1])
         {
             for (uint8_t x = 0; x < WIDTH; ++x)
-                lastUpdate[IDX(x, HEIGHT - 1)] = frame;
+                lastUpdate[IDX(x, HEIGHT - 1)] = timing.frame;
         }
     }
 
