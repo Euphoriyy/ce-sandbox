@@ -158,6 +158,13 @@ void drawGUI()
     else
         gfx_PrintString("IDLE");
 
+    if (gameState.isPaused)
+    {
+        gfx_SetColor(255);
+        gfx_FillRectangle_NoClip(53, 3, 3, 7);
+        gfx_FillRectangle_NoClip(58, 3, 3, 7);
+    }
+
     gfx_SetColor(0);
     gfx_FillRectangle_NoClip(72, 2, 8, 8);
     gfx_SetColor(materialShades[palette[cursor.paletteIndex]][0]);
