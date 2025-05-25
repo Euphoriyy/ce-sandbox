@@ -8,7 +8,8 @@ void drawSquare(Vector2 pos, uint8_t size, uint8_t mat)
         for (int8_t dx = -size / 2; dx < size / 2 + oddOffset; ++dx)
         {
             uint8_t nx = pos.x + dx, ny = pos.y + dy;
-            if (IN_BOUNDS(nx, ny) && !getPixel(nx, ny))
+            // Depending on whether the material is not empty, check if the pixel is vacant or not
+            if (IN_BOUNDS(nx, ny) && (mat ? !getPixel(nx, ny) : getPixel(nx, ny)))
                 setPixel(nx, ny, mat);
         }
     }
@@ -26,7 +27,9 @@ void drawCircle(Vector2 pos, uint8_t size, uint8_t mat)
             if (dx * dx + dy * dy <= radius * (radius + oddOffset))
             {
                 uint8_t nx = pos.x + dx, ny = pos.y + dy;
-                if (IN_BOUNDS(nx, ny) && !getPixel(nx, ny))
+                // Depending on whether the material is not empty, check if the pixel is vacant or
+                // not
+                if (IN_BOUNDS(nx, ny) && (mat ? !getPixel(nx, ny) : getPixel(nx, ny)))
                 {
                     setPixel(nx, ny, mat);
                 }
