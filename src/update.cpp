@@ -7,29 +7,28 @@ void update()
         // Skip updating rows that are inactive or weren't updated within the last 5 frames
         if (!pixelData.activeRows[y] || timing.frame - pixelData.lastUpdateByRow[y] >= 5)
             continue;
+
         bool flip = randInt(0, 1);
         for (x = (flip ? 0 : WIDTH - 1); flip ? x < WIDTH : x != 0xFF; x += (flip ? 1 : -1))
         {
-            uint16_t idx = IDX(x, y);
-            // Only update if the pixel is active
-            if (pixelData.activeFlags[idx])
+            if (!pixelData.activeFlags[IDX(x, y)])
+                continue;
+
+            uint8_t mat = getPixel(x, y);
+            switch (mat)
             {
-                uint8_t mat = getPixel(x, y);
-                switch (mat)
-                {
-                    case Material::Sand:
-                        updateSand(x, y);
-                        break;
-                    case Material::Water:
-                        updateWater(x, y);
-                        break;
-                    case Material::Dirt:
-                        updateDirt(x, y);
-                        break;
-                    case Material::Acid:
-                        updateAcid(x, y);
-                        break;
-                }
+                case Material::Sand:
+                    updateSand(x, y);
+                    break;
+                case Material::Water:
+                    updateWater(x, y);
+                    break;
+                case Material::Dirt:
+                    updateDirt(x, y);
+                    break;
+                case Material::Acid:
+                    updateAcid(x, y);
+                    break;
             }
         }
     }
