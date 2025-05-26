@@ -12,6 +12,8 @@ converts:
     images:
       - background_1.png
       - title.png
+      - avatar0.png
+      - avatar1.png
 
 outputs:
   - type: c

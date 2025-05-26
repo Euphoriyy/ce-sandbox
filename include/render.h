@@ -8,6 +8,7 @@
 
 void mainMenu();
 void precomputeBgColors();
+void drawAvatar();
 void drawCursor();
 void drawGUI();
 void render();

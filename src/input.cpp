@@ -12,6 +12,7 @@ void handleInput()
         memset(pixelData.lastUpdateByRow, 0, HEIGHT * sizeof(uint16_t));
         pixelData.activeCount = 0;
         timing.frame = 0;
+        resetAvatar();
     }
 
     if (kb_IsDown(kb_KeyRight) && cursor.pos.x < WIDTH - 1)
@@ -35,7 +36,28 @@ void handleInput()
         --cursor.pos.y;
     }
 
-    // Get current key state
+    // Move Avatar Right
+    if (kb_IsDown(kb_KeyTan) && avatar.spawned && avatar.pos.x < GFX_LCD_WIDTH - avatarWidth) {
+        clearAvatar();
+        // Switch orientation to the right
+        if (avatar.orientation == Avatar::Orientation::Left)
+            avatar.orientation = Avatar::Orientation::Right;
+        if (avatar.pos.x & 3)
+            avatar.switchSprite = !avatar.switchSprite;
+        avatar.pos.x += avatar.speed;
+    }
+    // Move Avatar Left
+    if (kb_IsDown(kb_KeySin) && avatar.spawned && avatar.pos.x > 0) {
+        clearAvatar();
+        // Switch orientation to the left
+        if (avatar.orientation == Avatar::Orientation::Right)
+            avatar.orientation = Avatar::Orientation::Left;
+        if (avatar.pos.x & 3)
+            avatar.switchSprite = !avatar.switchSprite;
+        avatar.pos.x -= avatar.speed;
+    }
+
+    // Get Current Key State
     keyState.cur.enter = kb_IsDown(kb_KeyEnter);
     keyState.cur.del = kb_IsDown(kb_KeyDel);
     keyState.cur.yequ = kb_IsDown(kb_KeyYequ);
@@ -45,6 +67,7 @@ void handleInput()
     keyState.cur.window = kb_IsDown(kb_KeyWindow);
     keyState.cur.trace = kb_IsDown(kb_KeyTrace);
     keyState.cur.graphVar = kb_IsDown(kb_KeyGraphVar);
+    keyState.cur.apps = kb_IsDown(kb_KeyApps);
 
     // Toggle Drawing Mode
     if (keyState.cur.enter && !keyState.prev.enter)
@@ -78,6 +101,15 @@ void handleInput()
         if (!gameState.enableFloor && pixelData.activeRows[HEIGHT - 1])
         {
             pixelData.lastUpdateByRow[HEIGHT - 1] = timing.frame;
+        }
+    }
+
+    // Toggle Avatar Spawning
+    if (keyState.cur.apps && !keyState.prev.apps) {
+        avatar.spawned = !avatar.spawned;
+        if (!avatar.spawned) {
+            clearAvatar();
+            resetAvatar();
         }
     }
 

@@ -32,6 +32,7 @@ int main(void)
     uint16_t lastTick = timer_GetSafe(1, TIMER_UP), currentTick;
 
     precomputeBgColors();
+    initAvatarSprites();
 
     while (!kb_IsDown(kb_KeyMode))
     {
@@ -52,7 +53,7 @@ int main(void)
         currentTick = timer_GetSafe(1, TIMER_UP);
         timing.frametime = (currentTick - lastTick) * 1000 / 32768;
         lastTick = currentTick;
-    };
+    }
 
     timer_Disable(1);
     gfx_End();

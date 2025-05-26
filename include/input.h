@@ -3,7 +3,7 @@
 #include <keypadc.h>
 #include <string.h>
 
-#include "pixels.h"
 #include "draw.h"
+#include "pixels.h"
 
 void handleInput();

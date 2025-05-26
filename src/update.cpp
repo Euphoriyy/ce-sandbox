@@ -32,6 +32,41 @@ void update()
             }
         }
     }
+
+    if (avatar.spawned)
+        updateAvatarVerticalPos();
+}
+
+void updateAvatarVerticalPos()
+{
+    bool positionModified = false;
+
+    // Lift avatar if intersecting a solid material
+    for (uint8_t y = avatar.pos.y; y > GUI_HEIGHT; --y)
+    {
+        uint8_t intersectingMat = getPixel((avatar.pos.x + avatarWidth / 2) / SCALE_FACTOR,
+                                           (y + avatarHeight / 2 + 4) / SCALE_FACTOR);
+        if (intersectingMat && intersectingMat != Material::Water &&
+            intersectingMat != Material::Acid)
+        {
+            --avatar.pos.y;
+            positionModified = true;
+        }
+    }
+
+    uint8_t belowMat = getPixel((avatar.pos.x + avatarWidth / 2) / SCALE_FACTOR,
+                                (avatar.pos.y + avatarHeight / 2) / SCALE_FACTOR);
+
+    // Fall avatar if there is no solid material directly below
+    if ((!belowMat || belowMat == Material::Water || belowMat == Material::Acid) &&
+        avatar.pos.y < GFX_LCD_HEIGHT - avatarHeight + 1)
+    {
+        avatar.pos.y += 2;
+        positionModified = true;
+    }
+
+    if (positionModified)
+        clearAvatar();
 }
 
 void updateSand(uint8_t x, uint8_t y)

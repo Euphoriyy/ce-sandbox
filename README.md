@@ -20,3 +20,6 @@ The controls for the game are the following:
 | Decrease Brush Size | <kbd>window            </kbd> |
 | Increase Brush Size | <kbd>trace             </kbd> |
 | Toggle Floor        | <kbd>zoom              </kbd> |
+| (De)Spawn Avatar    | <kbd>apps              </kbd> |
+| Move Avatar Left    | <kbd>sin               </kbd> |
+| Move Avatar Right   | <kbd>tan               </kbd> |

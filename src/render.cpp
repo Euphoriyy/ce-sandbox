@@ -119,6 +119,9 @@ void render()
         }
     }
 
+    if (avatar.spawned)
+        drawAvatar();
+
     drawCursor();
 
     drawGUI();
@@ -126,6 +129,21 @@ void render()
     // --------------
 
     gfx_SwapDraw();
+}
+
+void drawAvatar()
+{
+    gfx_rletsprite_t *sprite;
+    if (avatar.orientation == Avatar::Orientation::Right)
+        if (!avatar.switchSprite)
+            sprite = avatar.sprite0;
+        else
+            sprite = avatar.sprite1;
+    else if (!avatar.switchSprite)
+        sprite = avatar.flippedSprite0;
+    else
+        sprite = avatar.flippedSprite1;
+    gfx_RLETSprite_NoClip(sprite, avatar.pos.x, avatar.pos.y);
 }
 
 void drawCursor()

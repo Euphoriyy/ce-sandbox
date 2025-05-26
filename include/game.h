@@ -8,7 +8,7 @@ struct KeyState
     struct Keys
     {
         bool enter = false, del = false, yequ = false, graph = false, second = false, zoom = false,
-             window = false, trace = false, graphVar = false;
+             window = false, trace = false, graphVar = false, apps = false;
     };
     Keys prev, cur;
 };
@@ -34,6 +34,24 @@ struct GameState
     uint8_t brushSize = 1;
 };
 
+constexpr uint8_t avatarWidth = 16, avatarHeight = 32;
+
+struct Avatar
+{
+    enum Orientation
+    {
+        Left,
+        Right
+    };
+    static constexpr Vector2_16 defaultPos = {GFX_LCD_WIDTH / 2 - avatarWidth / 2,
+                                              GFX_LCD_HEIGHT - avatarHeight + 1};
+    Vector2_16 pos = defaultPos;
+    Orientation orientation = Avatar::Orientation::Right;
+    bool spawned = false, switchSprite = false;
+    uint8_t speed = 2;
+    gfx_rletsprite_t *sprite0, *flippedSprite0, *sprite1, *flippedSprite1;
+};
+
 enum Material
 {
     Empty,
@@ -55,5 +73,9 @@ extern Cursor cursor;
 extern Timing timing;
 extern KeyState keyState;
 extern GameState gameState;
+extern Avatar avatar;
 
+void initAvatarSprites();
+void resetAvatar();
 void clearCursor();
+void clearAvatar();
