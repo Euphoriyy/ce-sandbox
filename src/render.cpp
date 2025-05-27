@@ -161,10 +161,12 @@ void drawCursor()
 
 void drawGUI()
 {
-    gfx_SetColor(50);
+    constexpr uint8_t GUI_BG_COLOR = 57, GUI_FG_COLOR = 255, GUI_ACCENT_COLOR = 0;
+    gfx_SetColor(GUI_BG_COLOR);
     gfx_FillRectangle_NoClip(0, 0, GFX_LCD_WIDTH, GUI_HEIGHT);
-    gfx_SetTextFGColor(255);
-    gfx_SetTextBGColor(50);
+
+    gfx_SetTextFGColor(GUI_FG_COLOR);
+    gfx_SetTextBGColor(GUI_BG_COLOR);
     gfx_SetTextTransparentColor(0);
     gfx_SetTextXY(10, 3);
     gfx_SetTextScale(1, 1);
@@ -178,12 +180,12 @@ void drawGUI()
 
     if (gameState.isPaused)
     {
-        gfx_SetColor(255);
+        gfx_SetColor(GUI_FG_COLOR);
         gfx_FillRectangle_NoClip(53, 3, 3, 7);
         gfx_FillRectangle_NoClip(58, 3, 3, 7);
     }
 
-    gfx_SetColor(0);
+    gfx_SetColor(GUI_ACCENT_COLOR);
     if (gameState.circleBrush)
     {
         gfx_FillCircle_NoClip(75, 6, 4);
