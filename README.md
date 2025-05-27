@@ -15,6 +15,7 @@ The controls for the game are the following:
 | Toggle Erasing      | <kbd>del               </kbd> |
 | Toggle Circle Brush | <kbd>xton              </kbd> |
 | Pause Game          | <kbd>2nd               </kbd> |
+| Exit Game           | <kbd>mode              </kbd> |
 | Previous Material   | <kbd>y=                </kbd> |
 | Next Material       | <kbd>graph             </kbd> |
 | Decrease Brush Size | <kbd>window            </kbd> |
