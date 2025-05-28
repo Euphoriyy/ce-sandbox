@@ -9,7 +9,7 @@ const uint8_t GUI_HEIGHT = 12;
 const uint8_t SCALE_FACTOR = 5;
 const uint8_t WIDTH = GFX_LCD_WIDTH / SCALE_FACTOR;
 const uint8_t HEIGHT = (GFX_LCD_HEIGHT - GUI_HEIGHT) / SCALE_FACTOR;
-const uint16_t TOTAL_PIXELS = WIDTH * HEIGHT;
+const uint24_t TOTAL_PIXELS = WIDTH * HEIGHT;
 
 struct Pixels
 {
@@ -18,9 +18,9 @@ struct Pixels
     bool activeRows[HEIGHT] = {0};
     bool dirtyFlags[TOTAL_PIXELS] = {0};
     bool dirtyRows[HEIGHT] = {0};
-    uint16_t activeCount = 0;
-    uint16_t lastUpdateByRow[HEIGHT];
-    uint16_t yOffsets[HEIGHT];
+    uint24_t activeCount = 0;
+    uint24_t lastUpdateByRow[HEIGHT];
+    uint24_t yOffsets[HEIGHT];
     uint8_t bgColorCells[TOTAL_PIXELS];
 };
 

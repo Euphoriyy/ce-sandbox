@@ -29,7 +29,7 @@ int main(void)
     // Enable timer for frametime tracking
     timer_Enable(1, TIMER_32K, TIMER_NOINT, TIMER_UP);
     timer_Set(1, 0);
-    uint16_t lastTick = timer_GetSafe(1, TIMER_UP), currentTick;
+    uint24_t lastTick = timer_GetSafe(1, TIMER_UP), currentTick;
 
     precomputeBgColors();
     initAvatarSprites();

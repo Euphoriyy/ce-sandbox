@@ -57,7 +57,7 @@ void render()
                 }
 
                 uint8_t runLength = runEnd - runStart + 1;
-                uint16_t runWidth = runLength * SCALE_FACTOR;
+                uint24_t runWidth = runLength * SCALE_FACTOR;
 
                 uint8_t xScaleOffset =
                     (runEnd == WIDTH - 1 && SCALE_FACTOR != gcd(GFX_LCD_WIDTH, SCALE_FACTOR))
@@ -100,7 +100,7 @@ void render()
                 }
 
                 uint8_t runLength = runEnd - runStart + 1;
-                uint16_t runWidth = runLength * SCALE_FACTOR;
+                uint24_t runWidth = runLength * SCALE_FACTOR;
 
                 uint8_t xScaleOffset =
                     (runEnd == WIDTH - 1 && SCALE_FACTOR != gcd(GFX_LCD_WIDTH, SCALE_FACTOR))
@@ -150,9 +150,9 @@ void drawCursor()
 {
     gfx_SetColor(cursor.color);
     // A brush size of 2 otherwise causes the cursor to be off-center
-    uint16_t cx = cursor.pos.x * cursor.size + cursor.size / (2 * gameState.brushSize) -
+    uint24_t cx = cursor.pos.x * cursor.size + cursor.size / (2 * gameState.brushSize) -
                   (gameState.brushSize == 2);
-    uint16_t cy = cursor.pos.y * cursor.size + GUI_HEIGHT +
+    uint24_t cy = cursor.pos.y * cursor.size + GUI_HEIGHT +
                   cursor.size / (2 * gameState.brushSize) - (gameState.brushSize == 2);
     gfx_HorizLine(cx - cursor.size * gameState.brushSize, cy,
                   cursor.size * 2 * gameState.brushSize);
@@ -255,14 +255,14 @@ void precomputeBgColors()
 {
     for (uint8_t y = 0; y < HEIGHT; ++y)
     {
-        uint16_t screenY = y * SCALE_FACTOR + SCALE_FACTOR / 2 + GUI_HEIGHT;
+        uint24_t screenY = y * SCALE_FACTOR + SCALE_FACTOR / 2 + GUI_HEIGHT;
         uint8_t bgY = screenY * background_1_height / GFX_LCD_HEIGHT;
         if (bgY >= background_1_height)
             bgY = background_1_height - 1;
 
         for (uint8_t x = 0; x < WIDTH; ++x)
         {
-            uint16_t screenX = x * SCALE_FACTOR + SCALE_FACTOR / 2;
+            uint24_t screenX = x * SCALE_FACTOR + SCALE_FACTOR / 2;
             uint8_t bgX = screenX * background_1_width / GFX_LCD_WIDTH;
             if (bgX >= background_1_width)
                 bgX = background_1_width - 1;

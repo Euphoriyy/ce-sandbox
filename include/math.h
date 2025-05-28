@@ -2,14 +2,15 @@
 
 #include <cstdint>
 
-uint8_t gcd(uint16_t a, uint16_t b);
+uint8_t gcd(uint24_t a, uint24_t b);
+
 
 struct Vector2
 {
     uint8_t x, y;
 };
 
-struct Vector2_16
+struct Vector2_24
 {
-    uint16_t x, y;
+    uint24_t x, y;
 };

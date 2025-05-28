@@ -23,7 +23,7 @@ struct Cursor
 
 struct Timing
 {
-    uint16_t frame = 0;
+    uint24_t frame = 0;
     uint8_t frametime = 0;
 };
 
@@ -43,9 +43,8 @@ struct Avatar
         Left,
         Right
     };
-    static constexpr Vector2_16 defaultPos = {GFX_LCD_WIDTH / 2 - avatarWidth / 2,
-                                              GFX_LCD_HEIGHT - avatarHeight + 1};
-    Vector2_16 pos = defaultPos;
+    static Vector2_24 defaultPos;
+    Vector2_24 pos = defaultPos;
     Orientation orientation = Avatar::Orientation::Right;
     bool spawned = false, switchSprite = false;
     uint8_t speed = 2;

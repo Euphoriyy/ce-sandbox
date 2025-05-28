@@ -9,7 +9,7 @@ void handleInput()
         memset(pixelData.activeRows, 0, HEIGHT);
         memset(pixelData.dirtyFlags, 0, TOTAL_PIXELS);
         memset(pixelData.dirtyRows, 0, HEIGHT);
-        memset(pixelData.lastUpdateByRow, 0, HEIGHT * sizeof(uint16_t));
+        memset(pixelData.lastUpdateByRow, 0, HEIGHT * sizeof(uint24_t));
         pixelData.activeCount = 0;
         timing.frame = 0;
         resetAvatar();
@@ -37,7 +37,8 @@ void handleInput()
     }
 
     // Move Avatar Right
-    if (kb_IsDown(kb_KeyTan) && avatar.spawned && avatar.pos.x < GFX_LCD_WIDTH - avatarWidth) {
+    if (kb_IsDown(kb_KeyTan) && avatar.spawned && avatar.pos.x < GFX_LCD_WIDTH - avatarWidth)
+    {
         clearAvatar();
         // Switch orientation to the right
         if (avatar.orientation == Avatar::Orientation::Left)
@@ -47,7 +48,8 @@ void handleInput()
         avatar.pos.x += avatar.speed;
     }
     // Move Avatar Left
-    if (kb_IsDown(kb_KeySin) && avatar.spawned && avatar.pos.x > 0) {
+    if (kb_IsDown(kb_KeySin) && avatar.spawned && avatar.pos.x > 0)
+    {
         clearAvatar();
         // Switch orientation to the left
         if (avatar.orientation == Avatar::Orientation::Right)
@@ -105,9 +107,11 @@ void handleInput()
     }
 
     // Toggle Avatar Spawning
-    if (keyState.cur.apps && !keyState.prev.apps) {
+    if (keyState.cur.apps && !keyState.prev.apps)
+    {
         avatar.spawned = !avatar.spawned;
-        if (!avatar.spawned) {
+        if (!avatar.spawned)
+        {
             clearAvatar();
             resetAvatar();
         }
