@@ -34,11 +34,12 @@ void render()
         uint8_t scaledY = y * SCALE_FACTOR + GUI_HEIGHT;
         uint8_t yScaleOffset = y == HEIGHT - 1 ? gcd(GFX_LCD_HEIGHT, SCALE_FACTOR) : 0;
         yScaleOffset -= yScaleOffset / 2; // Avoid overflowing issues
+        uint24_t rowIdx = IDX(0, y);
 
         for (uint8_t x = 0; x < WIDTH; ++x)
         {
             // Do not draw if pixel is not flagged as dirty
-            if (!pixelData.dirtyFlags[IDX(x, y)])
+            if (!pixelData.dirtyFlags[rowIdx + x])
                 continue;
 
             uint8_t mat = getPixel(x, y);
@@ -49,8 +50,9 @@ void render()
 
                 // Find the end of the contiguous run with the same mat, an active flag, and a dirty
                 // flag
-                for (int i = x + 1; i < WIDTH && pixelData.activeFlags[IDX(i, y)] &&
-                                    pixelData.dirtyFlags[IDX(i, y)] && getPixel(i, y) == mat;
+                for (uint8_t i = x + 1;
+                     i < WIDTH && pixelData.activeFlags[rowIdx + i] &&
+                     pixelData.dirtyFlags[rowIdx + i] && getPixel(rowIdx + i) == mat;
                      ++i)
                 {
                     runEnd = i;
@@ -82,7 +84,7 @@ void render()
                     (x == WIDTH - 1 && SCALE_FACTOR != gcd(GFX_LCD_WIDTH, SCALE_FACTOR))
                         ? gcd(GFX_LCD_WIDTH, SCALE_FACTOR)
                         : 0;
-                uint8_t color = pixelData.bgColorCells[IDX(x, y)];
+                uint8_t color = pixelData.bgColorCells[rowIdx + x];
                 gfx_SetColor(color);
                 gfx_FillRectangle_NoClip(x * SCALE_FACTOR, scaledY, SCALE_FACTOR + xScaleOffset,
                                          SCALE_FACTOR + yScaleOffset);
@@ -92,8 +94,8 @@ void render()
                 uint8_t runStart = x, runEnd = x;
 
                 // Find the end of the contiguous run without an active flag and with a dirty flag
-                for (int i = x + 1; i < WIDTH && !pixelData.activeFlags[IDX(i, y)] &&
-                                    pixelData.dirtyFlags[IDX(i, y)];
+                for (uint8_t i = x + 1; i < WIDTH && !pixelData.activeFlags[rowIdx + i] &&
+                                        pixelData.dirtyFlags[rowIdx + i];
                      ++i)
                 {
                     runEnd = i;
@@ -259,6 +261,7 @@ void precomputeBgColors()
         uint8_t bgY = screenY * background_1_height / GFX_LCD_HEIGHT;
         if (bgY >= background_1_height)
             bgY = background_1_height - 1;
+        uint24_t rowIdx = IDX(0, y);
 
         for (uint8_t x = 0; x < WIDTH; ++x)
         {
@@ -268,7 +271,7 @@ void precomputeBgColors()
                 bgX = background_1_width - 1;
 
             uint8_t color = background_1_data[bgY * background_1_width + bgX];
-            pixelData.bgColorCells[IDX(x, y)] = color;
+            pixelData.bgColorCells[rowIdx + x] = color;
         }
     }
 }

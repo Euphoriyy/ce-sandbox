@@ -4,7 +4,6 @@ Vector2_24 Avatar::defaultPos = {GFX_LCD_WIDTH / 2 - avatarWidth / 2,
                                  GFX_LCD_HEIGHT - avatarHeight + 1};
 
 Cursor cursor;
-Timing timing;
 KeyState keyState;
 GameState gameState;
 Avatar avatar;
@@ -57,15 +56,16 @@ void clearAvatar()
 
     for (uint8_t y = top; y < bottom; ++y)
     {
-        if (IN_BOUNDS(0, y))
+        uint24_t rowIdx = IDX(0, y);
+        if (IN_BOUNDS(rowIdx))
         {
             pixelData.dirtyRows[y] = true;
 
             for (uint8_t x = left; x < right; ++x)
             {
-                if (IN_BOUNDS(x, y))
+                if (IN_BOUNDS(rowIdx + x))
                 {
-                    pixelData.dirtyFlags[IDX(x, y)] = true;
+                    pixelData.dirtyFlags[rowIdx + x] = true;
                 }
             }
         }

@@ -4,7 +4,6 @@
 
 uint8_t gcd(uint24_t a, uint24_t b);
 
-
 struct Vector2
 {
     uint8_t x, y;

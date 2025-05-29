@@ -21,12 +21,6 @@ struct Cursor
     uint8_t paletteIndex = 0;
 };
 
-struct Timing
-{
-    uint24_t frame = 0;
-    uint8_t frametime = 0;
-};
-
 struct GameState
 {
     bool isDrawing = false, isErasing = false, isPaused = false, enableFloor = true,
@@ -69,7 +63,6 @@ const uint8_t palette[] = {Material::Sand, Material::Water, Material::Dirt, Mate
 const uint8_t paletteLen = sizeof(palette);
 
 extern Cursor cursor;
-extern Timing timing;
 extern KeyState keyState;
 extern GameState gameState;
 extern Avatar avatar;
