@@ -257,16 +257,18 @@ void precomputeBgColors()
 {
     for (uint8_t y = 0; y < HEIGHT; ++y)
     {
+        // Sample at pixel center
         uint24_t screenY = y * SCALE_FACTOR + SCALE_FACTOR / 2 + GUI_HEIGHT;
-        uint8_t bgY = screenY * background_1_height / GFX_LCD_HEIGHT;
+        // Add rounding for better accuracy
+        uint8_t bgY = (screenY * background_1_height + GFX_LCD_HEIGHT / 2) / GFX_LCD_HEIGHT;
         if (bgY >= background_1_height)
             bgY = background_1_height - 1;
-        uint24_t rowIdx = IDX(0, y);
 
+        uint24_t rowIdx = IDX(0, y);
         for (uint8_t x = 0; x < WIDTH; ++x)
         {
             uint24_t screenX = x * SCALE_FACTOR + SCALE_FACTOR / 2;
-            uint8_t bgX = screenX * background_1_width / GFX_LCD_WIDTH;
+            uint8_t bgX = (screenX * background_1_width + GFX_LCD_WIDTH / 2) / GFX_LCD_WIDTH;
             if (bgX >= background_1_width)
                 bgX = background_1_width - 1;
 
