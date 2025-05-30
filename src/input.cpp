@@ -9,6 +9,7 @@ void handleInput()
         memset(pixelData.activeRows, 0, HEIGHT);
         memset(pixelData.dirtyFlags, 0, TOTAL_PIXELS);
         memset(pixelData.dirtyRows, 0, HEIGHT);
+        memset(pixelData.lastUpdate, 0, TOTAL_PIXELS * sizeof(uint24_t));
         memset(pixelData.lastUpdateByRow, 0, HEIGHT * sizeof(uint24_t));
         pixelData.activeCount = 0;
         timing.frame = 0;

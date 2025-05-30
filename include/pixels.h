@@ -20,6 +20,7 @@ struct Pixels
     bool dirtyFlags[TOTAL_PIXELS] = {0};
     bool dirtyRows[HEIGHT] = {0};
     uint24_t activeCount = 0;
+    uint24_t lastUpdate[TOTAL_PIXELS];
     uint24_t lastUpdateByRow[HEIGHT];
     uint24_t yOffsets[HEIGHT];
     uint8_t bgColorCells[TOTAL_PIXELS];
@@ -89,12 +90,23 @@ inline void setPixel(uint8_t x, uint8_t y, uint8_t mat)
         pixelData.activeRows[y] = rowActive;
     }
 
-    // When a pixel is updated, change the updated status of its row and its adjacent rows
-#pragma unroll
-    for (int8_t dy = -1; dy <= 1; ++dy)
+    // Change updated status of pixel and row
+    pixelData.lastUpdate[idx] = timing.frame;
+    pixelData.lastUpdateByRow[y] = timing.frame;
+
+    // Change updated status of adjacent pixels & rows
+    if (IN_BOUNDS(x - 1, y))
+        pixelData.lastUpdate[idx - 1] = timing.frame;
+    if (IN_BOUNDS(x + 1, y))
+        pixelData.lastUpdate[idx + 1] = timing.frame;
+    if (IN_BOUNDS(x, y - 1))
     {
-        uint8_t ny = y + dy;
-        if (pixelData.activeRows[ny])
-            pixelData.lastUpdateByRow[ny] = timing.frame;
+        pixelData.lastUpdate[idx - WIDTH] = timing.frame;
+        pixelData.lastUpdateByRow[y - 1] = timing.frame;
+    }
+    if (IN_BOUNDS(x, y + 1))
+    {
+        pixelData.lastUpdate[idx + WIDTH] = timing.frame;
+        pixelData.lastUpdateByRow[y + 1] = timing.frame;
     }
 }

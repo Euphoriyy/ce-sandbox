@@ -4,14 +4,17 @@ void update()
 {
     for (uint8_t y = HEIGHT - 1, x; y != 0xFF; --y)
     {
-        // Skip updating rows that are inactive or weren't updated within the last 5 frames
-        if (!pixelData.activeRows[y] || timing.frame - pixelData.lastUpdateByRow[y] >= 5)
+        // Skip updating rows that are inactive or weren't updated within the last 2 frames
+        if (!pixelData.activeRows[y] || timing.frame - pixelData.lastUpdateByRow[y] >= 2)
             continue;
 
         bool flip = randInt(0, 1);
+        uint24_t rowIdx = IDX(0, y);
+
         for (x = (flip ? 0 : WIDTH - 1); flip ? x < WIDTH : x != 0xFF; x += (flip ? 1 : -1))
         {
-            if (!pixelData.activeFlags[IDX(x, y)])
+            if (!pixelData.activeFlags[rowIdx + x] ||
+                timing.frame - pixelData.lastUpdate[rowIdx + x] >= 2)
                 continue;
 
             uint8_t mat = getPixel(x, y);
@@ -100,7 +103,7 @@ void updateWater(uint8_t x, uint8_t y)
 {
     if (gameState.enableFloor && y == HEIGHT - 1)
         return;
-    // If down is empty
+
     if (!getPixel(DOWN))
     {
         switchMat(CUR_POS, DOWN, Material::Water);
@@ -127,7 +130,7 @@ void updateDirt(uint8_t x, uint8_t y)
 {
     if (gameState.enableFloor && y == HEIGHT - 1)
         return;
-    // If down is empty
+
     if (!getPixel(DOWN))
     {
         switchMat(CUR_POS, DOWN, Material::Dirt);
@@ -150,7 +153,7 @@ void updateAcid(uint8_t x, uint8_t y)
 {
     if (gameState.enableFloor && y == HEIGHT - 1)
         return;
-    // If down is empty
+
     if (!getPixel(DOWN))
     {
         switchMat(CUR_POS, DOWN, Material::Acid);
