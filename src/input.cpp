@@ -71,6 +71,8 @@ void handleInput()
     keyState.cur.trace = kb_IsDown(kb_KeyTrace);
     keyState.cur.graphVar = kb_IsDown(kb_KeyGraphVar);
     keyState.cur.apps = kb_IsDown(kb_KeyApps);
+    keyState.cur.sto = kb_IsDown(kb_KeySto);
+    keyState.cur.on = kb_On;
 
     // Toggle Drawing Mode
     if (keyState.cur.enter && !keyState.prev.enter)
@@ -107,17 +109,6 @@ void handleInput()
         }
     }
 
-    // Toggle Avatar Spawning
-    if (keyState.cur.apps && !keyState.prev.apps)
-    {
-        avatar.spawned = !avatar.spawned;
-        if (!avatar.spawned)
-        {
-            clearAvatar();
-            resetAvatar();
-        }
-    }
-
     // Increase Brush Size
     if (keyState.cur.trace && !keyState.prev.trace)
     {
@@ -138,7 +129,7 @@ void handleInput()
         }
     }
 
-    // Switch palette
+    // Switch Palette
     if (keyState.cur.yequ && !keyState.prev.yequ)
     {
         if (cursor.paletteIndex > 0)
@@ -154,7 +145,30 @@ void handleInput()
             cursor.paletteIndex = 0;
     }
 
-    // Draw or erase based on current mode
+    // Toggle Avatar Spawning
+    if (keyState.cur.apps && !keyState.prev.apps)
+    {
+        avatar.spawned = !avatar.spawned;
+        if (!avatar.spawned)
+        {
+            clearAvatar();
+            resetAvatar();
+        }
+    }
+
+    // Save Game
+    if (keyState.cur.sto && !keyState.prev.sto)
+    {
+        writeSave("SANDSAVE");
+    }
+
+    // Load Game
+    if (keyState.cur.on && !keyState.prev.on)
+    {
+        loadSave("SANDSAVE");
+    }
+
+    // Draw or Erase Based on Current Mode
     if (gameState.isDrawing)
     {
         if (gameState.brushSize == 1)
@@ -186,6 +200,6 @@ void handleInput()
         }
     }
 
-    // Set the previous key state to be the current key state
+    // Set Previous Key State to Current Key State
     keyState.prev = keyState.cur;
 }

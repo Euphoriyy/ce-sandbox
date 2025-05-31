@@ -15,11 +15,11 @@ const uint24_t TOTAL_PIXELS = WIDTH * HEIGHT;
 struct Pixels
 {
     uint8_t pixels[TOTAL_PIXELS] = {0};
+    uint24_t activeCount = 0;
     bool activeFlags[TOTAL_PIXELS] = {0};
     bool activeRows[HEIGHT] = {0};
     bool dirtyFlags[TOTAL_PIXELS] = {0};
     bool dirtyRows[HEIGHT] = {0};
-    uint24_t activeCount = 0;
     uint24_t lastUpdate[TOTAL_PIXELS];
     uint24_t lastUpdateByRow[HEIGHT];
     uint24_t yOffsets[HEIGHT];

@@ -8,7 +8,7 @@ struct KeyState
     struct Keys
     {
         bool enter = false, del = false, yequ = false, graph = false, second = false, zoom = false,
-             window = false, trace = false, graphVar = false, apps = false;
+             window = false, trace = false, graphVar = false, apps = false, sto = false, on = false;
     };
     Keys prev, cur;
 };

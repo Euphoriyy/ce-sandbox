@@ -5,5 +5,6 @@
 
 #include "draw.h"
 #include "pixels.h"
+#include "saves.h"
 
 void handleInput();
