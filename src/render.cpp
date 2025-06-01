@@ -248,7 +248,7 @@ void mainMenu()
 
     gfx_SwapDraw();
 
-    while (!os_GetCSC())
+    while (!kb_AnyKey())
     {
     }
 }

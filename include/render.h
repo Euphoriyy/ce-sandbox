@@ -1,8 +1,8 @@
 #pragma once
 
 #include <graphx.h>
+#include <keypadc.h>
 #include <string.h>
-#include <ti/getcsc.h>
 
 #include "pixels.h"
 
