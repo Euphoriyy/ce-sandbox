@@ -23,6 +23,9 @@ int main(void)
     // Set cursor size
     cursor.size = SCALE_FACTOR;
 
+    // Prevent the ON key from staying pressed
+    kb_DisableOnLatch();
+
     gfx_Begin();
     gfx_SetDrawBuffer();
 
