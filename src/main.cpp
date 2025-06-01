@@ -17,7 +17,7 @@ int main(void)
         pixelData.yOffsets[y] = y * WIDTH;
 
     // Precalculate division by the scale factor
-    for (uint24_t i = 0; i < GFX_LCD_WIDTH; ++i)
+    for (uint24_t i = 0; i < GFX_LCD_WIDTH + SCALE_FACTOR; ++i)
         pixelData.divByScaleFactor[i] = i / SCALE_FACTOR;
 
     // Set cursor size

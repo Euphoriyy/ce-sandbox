@@ -22,7 +22,7 @@ struct Pixels
     uint24_t lastUpdate[TOTAL_PIXELS];
     uint24_t lastUpdateByRow[HEIGHT];
     uint24_t yOffsets[HEIGHT];
-    uint8_t divByScaleFactor[GFX_LCD_WIDTH];
+    uint8_t divByScaleFactor[GFX_LCD_WIDTH + SCALE_FACTOR];
     uint8_t bgColorCells[TOTAL_PIXELS];
 };
 
