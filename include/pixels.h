@@ -16,7 +16,6 @@ struct Pixels
 {
     uint8_t pixels[TOTAL_PIXELS] = {0};
     uint24_t activeCount = 0;
-    bool activeFlags[TOTAL_PIXELS] = {0};
     bool activeRows[HEIGHT] = {0};
     bool dirtyFlags[TOTAL_PIXELS] = {0};
     bool dirtyRows[HEIGHT] = {0};
@@ -66,13 +65,10 @@ inline void setPixel(uint8_t x, uint8_t y, uint8_t mat)
 
     if (mat)
     {
-        pixelData.activeFlags[idx] = true;
         pixelData.activeRows[y] = true;
     }
     else
     {
-        pixelData.activeFlags[idx] = false;
-
         // Check if the row is otherwise active
         bool rowActive = false;
         uint24_t rowIdx = IDX(0, y);
@@ -82,7 +78,7 @@ inline void setPixel(uint8_t x, uint8_t y, uint8_t mat)
             if (j == x)
                 continue;
 
-            if (pixelData.activeFlags[rowIdx + j])
+            if (pixelData.pixels[rowIdx + j])
             {
                 rowActive = true;
                 break;

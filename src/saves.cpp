@@ -15,7 +15,6 @@ void writeSave(const char *saveName)
     // Write Pixel Data
     ti_Write(pixelData.pixels, 1, TOTAL_PIXELS, appVarHandle);
     ti_Write(&pixelData.activeCount, sizeof(uint24_t), 1, appVarHandle);
-    ti_Write(pixelData.activeFlags, 1, TOTAL_PIXELS, appVarHandle);
     ti_Write(pixelData.activeRows, 1, HEIGHT, appVarHandle);
     ti_Write(pixelData.lastUpdate, sizeof(uint24_t), TOTAL_PIXELS, appVarHandle);
     ti_Write(pixelData.lastUpdateByRow, sizeof(uint24_t), HEIGHT, appVarHandle);
@@ -39,7 +38,6 @@ void loadSave(const char *saveName)
     // Load Pixel Data
     ti_Read(pixelData.pixels, 1, TOTAL_PIXELS, appVarHandle);
     ti_Read(&pixelData.activeCount, sizeof(uint24_t), 1, appVarHandle);
-    ti_Read(pixelData.activeFlags, 1, TOTAL_PIXELS, appVarHandle);
     ti_Read(pixelData.activeRows, 1, HEIGHT, appVarHandle);
     ti_Read(pixelData.lastUpdate, sizeof(uint24_t), TOTAL_PIXELS, appVarHandle);
     ti_Read(pixelData.lastUpdateByRow, sizeof(uint24_t), HEIGHT, appVarHandle);

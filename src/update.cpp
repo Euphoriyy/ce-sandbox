@@ -13,7 +13,7 @@ void update()
 
         for (x = (flip ? 0 : WIDTH - 1); flip ? x < WIDTH : x != 0xFF; x += (flip ? 1 : -1))
         {
-            if (!pixelData.activeFlags[rowIdx + x] ||
+            if (!pixelData.pixels[rowIdx + x] ||
                 timing.frame - pixelData.lastUpdate[rowIdx + x] >= 2)
                 continue;
 

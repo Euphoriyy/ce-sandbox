@@ -48,11 +48,9 @@ void render()
             {
                 uint8_t runStart = x, runEnd = x;
 
-                // Find the end of the contiguous run with the same mat, an active flag, and a dirty
-                // flag
-                for (uint8_t i = x + 1;
-                     i < WIDTH && pixelData.activeFlags[rowIdx + i] &&
-                     pixelData.dirtyFlags[rowIdx + i] && getPixel(rowIdx + i) == mat;
+                // Find the end of the contiguous run with the same mat and a dirty flag
+                for (uint8_t i = x + 1; i < WIDTH && pixelData.pixels[rowIdx + i] == mat &&
+                                        pixelData.dirtyFlags[rowIdx + i];
                      ++i)
                 {
                     runEnd = i;
@@ -93,9 +91,9 @@ void render()
             {
                 uint8_t runStart = x, runEnd = x;
 
-                // Find the end of the contiguous run without an active flag and with a dirty flag
-                for (uint8_t i = x + 1; i < WIDTH && !pixelData.activeFlags[rowIdx + i] &&
-                                        pixelData.dirtyFlags[rowIdx + i];
+                // Find the end of the contiguous run that is inactive and has a dirty flag
+                for (uint8_t i = x + 1;
+                     i < WIDTH && !pixelData.pixels[rowIdx + i] && pixelData.dirtyFlags[rowIdx + i];
                      ++i)
                 {
                     runEnd = i;
