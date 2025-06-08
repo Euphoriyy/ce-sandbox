@@ -220,14 +220,14 @@ void drawGUI()
     }
 
     gfx_PrintStringXY("SZ:", 135, 3);
-    gfx_SetTextXY(158, 3);
+    gfx_SetTextXY(161, 3);
     gfx_PrintUInt(gameState.brushSize, 1);
 
-    gfx_PrintStringXY("FT:", 180, 3);
-    gfx_SetTextXY(205, 3);
+    gfx_PrintStringXY("FT:", 190, 3);
+    gfx_SetTextXY(218, 3);
     gfx_PrintUInt(timing.frametime, 2);
 
-    gfx_PrintStringXY("PARTS:", 230, 3);
+    gfx_PrintStringXY("PX:", 250, 3);
     gfx_SetTextXY(281, 3);
     gfx_PrintUInt(pixelData.activeCount, 1);
 }
