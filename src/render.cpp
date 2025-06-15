@@ -143,7 +143,7 @@ void drawAvatar()
         sprite = avatar.flippedSprite0;
     else
         sprite = avatar.flippedSprite1;
-    gfx_RLETSprite_NoClip(sprite, avatar.pos.x, avatar.pos.y);
+    gfx_RLETSprite(sprite, avatar.pos.x, avatar.pos.y);
 }
 
 void drawCursor()
