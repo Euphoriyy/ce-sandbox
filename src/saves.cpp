@@ -10,7 +10,8 @@ void writeSave(const char *saveName)
     ti_Write(&gameState, 1, sizeof(gameState), appVarHandle);
     ti_Write(&timing.frame, sizeof(uint24_t), 1, appVarHandle);
     ti_Write(&cursor, 1, sizeof(cursor), appVarHandle);
-    ti_Write(&avatar, 1, sizeof(avatar), appVarHandle);
+    // Do not write the avatar's sprite pointers
+    ti_Write(&avatar, 1, sizeof(avatar) - (4 * sizeof(gfx_rletsprite_t *)), appVarHandle);
 
     // Write Pixel Data
     ti_Write(pixelData.pixels, 1, TOTAL_PIXELS, appVarHandle);
@@ -33,7 +34,7 @@ void loadSave(const char *saveName)
     ti_Read(&gameState, 1, sizeof(gameState), appVarHandle);
     ti_Read(&timing.frame, sizeof(uint24_t), 1, appVarHandle);
     ti_Read(&cursor, 1, sizeof(cursor), appVarHandle);
-    ti_Read(&avatar, 1, sizeof(avatar), appVarHandle);
+    ti_Read(&avatar, 1, sizeof(avatar) - (4 * sizeof(gfx_rletsprite_t *)), appVarHandle);
 
     // Load Pixel Data
     ti_Read(pixelData.pixels, 1, TOTAL_PIXELS, appVarHandle);
