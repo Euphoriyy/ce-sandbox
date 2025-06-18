@@ -48,6 +48,7 @@ void updateAvatarVerticalPos()
     constexpr uint8_t halfOfAvatarWidth = avatarWidth / 2, halfOfAvatarHeight = avatarHeight / 2;
 
     // Lift avatar if intersecting a solid material
+    uint8_t nonintersectingCount = 0;
     for (uint8_t y = avatar.pos.y; y > GUI_HEIGHT; --y)
     {
         uint8_t intersectingMat =
@@ -58,6 +59,10 @@ void updateAvatarVerticalPos()
         {
             --newAvatarPos.y;
             positionModified = true;
+        }
+        else if (nonintersectingCount++ >= avatarHeight)
+        {
+            break;
         }
     }
 
