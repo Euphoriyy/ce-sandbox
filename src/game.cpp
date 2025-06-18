@@ -50,9 +50,13 @@ void clearAvatar()
 
     // Compute the scaled bounds of the sprite
     uint8_t left = pixelData.divByScaleFactor[avatar.pos.x];
-    uint8_t top = pixelData.divByScaleFactor[avatar.pos.y - avatarHeight - SCALE_FACTOR + 1];
     uint8_t right = pixelData.divByScaleFactor[avatar.pos.x + avatarWidth + SCALE_FACTOR - 1];
+    uint8_t top = pixelData.divByScaleFactor[avatar.pos.y - avatarHeight + SCALE_FACTOR];
     uint8_t bottom = pixelData.divByScaleFactor[avatar.pos.y + avatarHeight + SCALE_FACTOR - 1];
+
+    // Clamp the top bound to 0
+    if (top >= HEIGHT || top == bottom)
+        top = 0;
 
     for (uint8_t y = top; y < bottom; ++y)
     {
