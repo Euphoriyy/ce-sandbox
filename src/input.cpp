@@ -36,6 +36,8 @@ void handleInput()
         --cursor.pos.y;
     }
 
+    bool avatarMoved = false;
+
     // Move Avatar Right
     if (kb_IsDown(kb_KeyTan) && avatar.spawned && avatar.pos.x < GFX_LCD_WIDTH - avatarWidth)
     {
@@ -46,6 +48,7 @@ void handleInput()
         if (avatar.pos.x & 3)
             avatar.switchSprite = !avatar.switchSprite;
         avatar.pos.x += avatar.speed;
+        avatarMoved = true;
     }
     // Move Avatar Left
     if (kb_IsDown(kb_KeySin) && avatar.spawned && avatar.pos.x > 0)
@@ -57,6 +60,13 @@ void handleInput()
         if (avatar.pos.x & 3)
             avatar.switchSprite = !avatar.switchSprite;
         avatar.pos.x -= avatar.speed;
+        avatarMoved = true;
+    }
+    // Reset Avatar Sprite When Still
+    if (!avatarMoved && avatar.switchSprite)
+    {
+        clearAvatar();
+        avatar.switchSprite = false;
     }
 
     // Get Current Key State
