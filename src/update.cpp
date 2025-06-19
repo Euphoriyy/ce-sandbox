@@ -47,13 +47,15 @@ void updateAvatarVerticalPos()
 
     constexpr uint8_t halfOfAvatarWidth = avatarWidth / 2, halfOfAvatarHeight = avatarHeight / 2;
 
+    uint8_t scaledX = pixelData.divByScaleFactor[avatar.pos.x + halfOfAvatarWidth];
+
     // Lift avatar if intersecting a solid material
     uint8_t nonintersectingCount = 0;
     for (uint8_t y = avatar.pos.y; y > GUI_HEIGHT; --y)
+
     {
-        uint8_t intersectingMat =
-            getPixel(pixelData.divByScaleFactor[avatar.pos.x + halfOfAvatarWidth],
-                     pixelData.divByScaleFactor[y + halfOfAvatarHeight + 4]);
+        uint8_t scaledY = scaledY = pixelData.divByScaleFactor[y + halfOfAvatarHeight + 4];
+        uint8_t intersectingMat = pixelData.activeRows[scaledY] ? getPixel(scaledX, scaledY) : 0;
         if (intersectingMat && intersectingMat != Material::Water &&
             intersectingMat != Material::Acid)
         {
@@ -66,8 +68,8 @@ void updateAvatarVerticalPos()
         }
     }
 
-    uint8_t belowMat = getPixel(pixelData.divByScaleFactor[avatar.pos.x + halfOfAvatarWidth],
-                                pixelData.divByScaleFactor[avatar.pos.y + halfOfAvatarHeight]);
+    uint8_t belowMat =
+        getPixel(scaledX, pixelData.divByScaleFactor[avatar.pos.y + halfOfAvatarHeight]);
 
     // Fall avatar if there is no solid material directly below
     if ((!belowMat || belowMat == Material::Water || belowMat == Material::Acid) &&
@@ -79,7 +81,8 @@ void updateAvatarVerticalPos()
 
     if (positionModified)
     {
-        clearAvatar();
+        if (newAvatarPos.y - avatar.pos.y > 1)
+            clearAvatar();
         avatar.pos = newAvatarPos;
     }
 }
