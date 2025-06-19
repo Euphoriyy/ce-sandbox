@@ -49,7 +49,7 @@ inline void setPixel(uint8_t x, uint8_t y, uint8_t mat)
         return;
 
     uint24_t idx = IDX(x, y);
-    uint8_t prevMat = getPixel(idx);
+    uint8_t prevMat = pixelData.pixels[idx];
 
     if (mat == prevMat)
         return;
@@ -60,8 +60,10 @@ inline void setPixel(uint8_t x, uint8_t y, uint8_t mat)
     else if (prevMat && !mat)
         --pixelData.activeCount; // Decrement active count if it is zero
 
-    makeDirty(x, y);
+    // Change the material and mark pixel as dirty
     pixelData.pixels[idx] = mat;
+    pixelData.dirtyFlags[idx] = true;
+    pixelData.dirtyRows[y] = true;
 
     if (mat)
     {
@@ -71,7 +73,7 @@ inline void setPixel(uint8_t x, uint8_t y, uint8_t mat)
     {
         // Check if the row is otherwise active
         bool rowActive = false;
-        uint24_t rowIdx = IDX(0, y);
+        uint24_t rowIdx = idx - x;
 #pragma unroll
         for (uint8_t j = 0; j < WIDTH; ++j)
         {
