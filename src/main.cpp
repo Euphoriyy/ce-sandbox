@@ -20,8 +20,9 @@ int main(void)
     for (uint24_t i = 0; i < GFX_LCD_WIDTH + SCALE_FACTOR; ++i)
         pixelData.divByScaleFactor[i] = i / SCALE_FACTOR;
 
-    // Set cursor size
+    // Set cursor size and position
     cursor.size = SCALE_FACTOR;
+    cursor.pos = {WIDTH / 2, HEIGHT / 2};
 
     // Prevent the ON key from staying pressed
     kb_DisableOnLatch();
