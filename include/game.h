@@ -28,7 +28,8 @@ struct GameState
     uint8_t brushSize = 1;
 };
 
-constexpr uint8_t avatarWidth = 16, avatarHeight = 32;
+const uint8_t AVATAR_WIDTH = 16, AVATAR_HEIGHT = 32;
+constexpr uint8_t HALF_OF_AVATAR_WIDTH = AVATAR_WIDTH / 2, HALF_OF_AVATAR_HEIGHT = AVATAR_HEIGHT / 2;
 
 struct Avatar
 {
@@ -42,6 +43,7 @@ struct Avatar
     Orientation orientation = Avatar::Orientation::Right;
     bool spawned = false, switchSprite = false;
     uint8_t speed = 2;
+    uint24_t frameAtLastJump = 0;
     gfx_rletsprite_t *sprite0, *flippedSprite0, *sprite1, *flippedSprite1;
 };
 
@@ -71,3 +73,5 @@ void initAvatarSprites();
 void resetAvatar();
 void clearCursor();
 void clearAvatar();
+bool avatarCanMoveHorizontally(int8_t offset);
+bool avatarIsGrounded();

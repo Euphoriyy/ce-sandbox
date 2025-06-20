@@ -12,6 +12,7 @@ void handleInput()
         memset(pixelData.lastUpdateByRow, 0, HEIGHT * sizeof(uint24_t));
         pixelData.activeCount = 0;
         timing.frame = 0;
+        avatar.frameAtLastJump = 0;
         resetAvatar();
     }
 
@@ -39,7 +40,8 @@ void handleInput()
     bool avatarMoved = false;
 
     // Move Avatar Right
-    if (kb_IsDown(kb_KeyTan) && avatar.spawned && avatar.pos.x < GFX_LCD_WIDTH - avatarWidth)
+    if (kb_IsDown(kb_KeyTan) && avatar.spawned && avatar.pos.x < GFX_LCD_WIDTH - AVATAR_WIDTH &&
+        avatarCanMoveHorizontally(1))
     {
         clearAvatar();
         // Switch orientation to the right
@@ -51,7 +53,7 @@ void handleInput()
         avatarMoved = true;
     }
     // Move Avatar Left
-    if (kb_IsDown(kb_KeySin) && avatar.spawned && avatar.pos.x > 0)
+    if (kb_IsDown(kb_KeySin) && avatar.spawned && avatar.pos.x > 0 && avatarCanMoveHorizontally(-1))
     {
         clearAvatar();
         // Switch orientation to the left
@@ -62,6 +64,18 @@ void handleInput()
         avatar.pos.x -= avatar.speed;
         avatarMoved = true;
     }
+
+    // Jump Avatar
+    if (kb_IsDown(kb_KeyPrgm) && avatar.spawned &&
+        avatar.pos.y > pixelData.divByScaleFactor[AVATAR_HEIGHT] && avatarIsGrounded() &&
+        pixelData.activeCount && timing.frame - avatar.frameAtLastJump >= 10)
+    {
+        clearAvatar();
+        avatar.pos.y -= SCALE_FACTOR * 4;
+        avatar.frameAtLastJump = timing.frame;
+        avatarMoved = true;
+    }
+
     // Reset Avatar Sprite When Still
     if (!avatarMoved && avatar.switchSprite)
     {

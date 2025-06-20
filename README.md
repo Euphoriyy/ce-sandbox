@@ -26,3 +26,4 @@ The controls for the game are the following:
 | (De)Spawn Avatar    | <kbd>apps              </kbd> |
 | Move Avatar Left    | <kbd>sin               </kbd> |
 | Move Avatar Right   | <kbd>tan               </kbd> |
+| Make Avatar Jump    | <kbd>prgm              </kbd> |

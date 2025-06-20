@@ -1,7 +1,7 @@
 #include "../include/game.h"
 
-Vector2_24 Avatar::defaultPos = {GFX_LCD_WIDTH / 2 - avatarWidth / 2,
-                                 GFX_LCD_HEIGHT - avatarHeight + 1};
+Vector2_24 Avatar::defaultPos = {GFX_LCD_WIDTH / 2 - AVATAR_WIDTH / 2,
+                                 GFX_LCD_HEIGHT - AVATAR_HEIGHT + 1};
 
 Cursor cursor;
 KeyState keyState;
@@ -10,8 +10,8 @@ Avatar avatar;
 
 void initAvatarSprites()
 {
-    gfx_TempSprite(flippedAvatar0, avatarWidth, avatarHeight);
-    gfx_TempSprite(flippedAvatar1, avatarWidth, avatarHeight);
+    gfx_TempSprite(flippedAvatar0, AVATAR_WIDTH, AVATAR_HEIGHT);
+    gfx_TempSprite(flippedAvatar1, AVATAR_WIDTH, AVATAR_HEIGHT);
     gfx_FlipSpriteY(avatar0, flippedAvatar0);
     gfx_FlipSpriteY(avatar1, flippedAvatar1);
 
@@ -50,9 +50,9 @@ void clearAvatar()
 
     // Compute the scaled bounds of the sprite
     uint8_t left = pixelData.divByScaleFactor[avatar.pos.x];
-    uint8_t right = pixelData.divByScaleFactor[avatar.pos.x + avatarWidth + SCALE_FACTOR - 1];
-    uint8_t top = pixelData.divByScaleFactor[avatar.pos.y - avatarHeight + SCALE_FACTOR];
-    uint8_t bottom = pixelData.divByScaleFactor[avatar.pos.y + avatarHeight + SCALE_FACTOR - 1];
+    uint8_t right = pixelData.divByScaleFactor[avatar.pos.x + AVATAR_WIDTH + SCALE_FACTOR - 1];
+    uint8_t top = pixelData.divByScaleFactor[avatar.pos.y - AVATAR_HEIGHT + SCALE_FACTOR];
+    uint8_t bottom = pixelData.divByScaleFactor[avatar.pos.y + AVATAR_HEIGHT + SCALE_FACTOR - 1];
 
     // Clamp the top bound to 0
     if (top >= HEIGHT || top == bottom)
@@ -74,4 +74,34 @@ void clearAvatar()
             }
         }
     }
+}
+
+bool avatarCanMoveHorizontally(int8_t offset)
+{
+    uint8_t scaledX =
+        pixelData.divByScaleFactor[avatar.pos.x + HALF_OF_AVATAR_WIDTH + offset * SCALE_FACTOR];
+    uint8_t topY = pixelData.divByScaleFactor[avatar.pos.y];
+    uint8_t bottomY =
+        pixelData.divByScaleFactor[avatar.pos.y + HALF_OF_AVATAR_HEIGHT - SCALE_FACTOR];
+
+    if (bottomY >= HEIGHT - 1)
+        --bottomY;
+
+    // Check all side pixels that could collide with the avatar from top to bottom
+    for (uint8_t scaledY = topY; scaledY <= bottomY; ++scaledY)
+    {
+        uint8_t mat = getPixel(scaledX, scaledY);
+
+        if (mat && mat != Material::Water && mat != Material::Acid)
+            return false;
+    }
+    return true;
+}
+
+bool avatarIsGrounded()
+{
+    uint8_t scaledX = pixelData.divByScaleFactor[avatar.pos.x + HALF_OF_AVATAR_WIDTH];
+    uint8_t bottomY = pixelData.divByScaleFactor[avatar.pos.y + HALF_OF_AVATAR_HEIGHT];
+    uint8_t mat = getPixel(scaledX, bottomY + 1);
+    return (mat && mat != Material::Water && mat != Material::Acid) || bottomY >= HEIGHT - 1;
 }
