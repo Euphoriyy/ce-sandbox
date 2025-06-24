@@ -92,7 +92,7 @@ bool avatarCanMoveHorizontally(int8_t offset)
     {
         uint8_t mat = getPixel(scaledX, scaledY);
 
-        if (mat && mat != Material::Water && mat != Material::Acid)
+        if (mat && isSolid(mat))
             return false;
     }
     return true;
@@ -103,5 +103,5 @@ bool avatarIsGrounded()
     uint8_t scaledX = pixelData.divByScaleFactor[avatar.pos.x + HALF_OF_AVATAR_WIDTH];
     uint8_t bottomY = pixelData.divByScaleFactor[avatar.pos.y + HALF_OF_AVATAR_HEIGHT];
     uint8_t mat = getPixel(scaledX, bottomY + 1);
-    return (mat && mat != Material::Water && mat != Material::Acid) || bottomY >= HEIGHT - 1;
+    return (mat && isSolid(mat)) || bottomY >= HEIGHT - 1;
 }

@@ -54,8 +54,7 @@ void updateAvatarVerticalPos()
     {
         uint8_t scaledY = scaledY = pixelData.divByScaleFactor[y + HALF_OF_AVATAR_HEIGHT + 4];
         uint8_t intersectingMat = pixelData.activeRows[scaledY] ? getPixel(scaledX, scaledY) : 0;
-        if (intersectingMat && intersectingMat != Material::Water &&
-            intersectingMat != Material::Acid)
+        if (intersectingMat && isSolid(intersectingMat))
         {
             --newAvatarPos.y;
             positionModified = true;
@@ -70,8 +69,7 @@ void updateAvatarVerticalPos()
         getPixel(scaledX, pixelData.divByScaleFactor[avatar.pos.y + HALF_OF_AVATAR_HEIGHT]);
 
     // Fall avatar if there is no solid material directly below
-    if ((!belowMat || belowMat == Material::Water || belowMat == Material::Acid) &&
-        avatar.pos.y < GFX_LCD_HEIGHT - AVATAR_HEIGHT + 1)
+    if ((!belowMat || !isSolid(belowMat)) && avatar.pos.y < GFX_LCD_HEIGHT - AVATAR_HEIGHT + 1)
     {
         newAvatarPos.y += 2;
         positionModified = true;

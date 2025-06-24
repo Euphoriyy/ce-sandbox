@@ -29,7 +29,8 @@ struct GameState
 };
 
 const uint8_t AVATAR_WIDTH = 16, AVATAR_HEIGHT = 32;
-constexpr uint8_t HALF_OF_AVATAR_WIDTH = AVATAR_WIDTH / 2, HALF_OF_AVATAR_HEIGHT = AVATAR_HEIGHT / 2;
+constexpr uint8_t HALF_OF_AVATAR_WIDTH = AVATAR_WIDTH / 2,
+                  HALF_OF_AVATAR_HEIGHT = AVATAR_HEIGHT / 2;
 
 struct Avatar
 {
@@ -63,6 +64,8 @@ constexpr uint8_t materialShades[][shadeCount] = {{0, 1},    {2, 1, 0},  {5, 4, 
 const uint8_t palette[] = {Material::Sand, Material::Water, Material::Dirt, Material::Stone,
                            Material::Acid};
 const uint8_t paletteLen = sizeof(palette);
+
+inline bool isSolid(uint8_t mat) { return mat != Material::Water && mat != Material::Acid; }
 
 extern Cursor cursor;
 extern KeyState keyState;
