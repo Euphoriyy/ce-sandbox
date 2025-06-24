@@ -40,29 +40,54 @@ void handleInput()
     bool avatarMoved = false;
 
     // Move Avatar Right
-    if (kb_IsDown(kb_KeyTan) && avatar.spawned && avatar.pos.x < GFX_LCD_WIDTH - AVATAR_WIDTH &&
-        avatarCanMoveHorizontally(1))
+    if (kb_IsDown(kb_KeyTan) && avatar.spawned)
     {
-        clearAvatar();
+        uint8_t prevOrientation = avatar.orientation;
+        uint24_t nx = avatar.pos.x;
+
         // Switch orientation to the right
-        if (avatar.orientation == Avatar::Orientation::Left)
-            avatar.orientation = Avatar::Orientation::Right;
-        if (avatar.pos.x & 3)
-            avatar.switchSprite = !avatar.switchSprite;
-        avatar.pos.x += avatar.speed;
-        avatarMoved = true;
+        avatar.orientation = Avatar::Orientation::Right;
+
+        // Check if avatar can move to the right
+        if (avatar.pos.x < GFX_LCD_WIDTH - AVATAR_WIDTH && avatarCanMoveHorizontally(1))
+        {
+            if (avatar.pos.x & 3)
+                avatar.switchSprite = !avatar.switchSprite;
+            nx += avatar.speed;
+            avatarMoved = true;
+        }
+
+        // Clear avatar and update its x position
+        if (avatar.orientation != prevOrientation || avatarMoved)
+        {
+            clearAvatar();
+            avatar.pos.x = nx;
+        }
     }
     // Move Avatar Left
-    if (kb_IsDown(kb_KeySin) && avatar.spawned && avatar.pos.x > 0 && avatarCanMoveHorizontally(-1))
+    if (kb_IsDown(kb_KeySin) && avatar.spawned)
     {
-        clearAvatar();
+        uint8_t prevOrientation = avatar.orientation;
+        uint24_t nx = avatar.pos.x;
+
         // Switch orientation to the left
-        if (avatar.orientation == Avatar::Orientation::Right)
-            avatar.orientation = Avatar::Orientation::Left;
-        if (avatar.pos.x & 3)
-            avatar.switchSprite = !avatar.switchSprite;
-        avatar.pos.x -= avatar.speed;
-        avatarMoved = true;
+        avatar.orientation = Avatar::Orientation::Left;
+
+        // Check if avatar can move to the left
+        if (avatar.pos.x > 0 && avatarCanMoveHorizontally(-1))
+        {
+            if (avatar.pos.x & 3)
+                avatar.switchSprite = !avatar.switchSprite;
+            nx -= avatar.speed;
+            avatarMoved = true;
+        }
+
+        // Clear avatar and update its x position
+        if (avatar.orientation != prevOrientation || avatarMoved)
+        {
+            clearAvatar();
+            avatar.pos.x = nx;
+        }
     }
 
     // Jump Avatar
