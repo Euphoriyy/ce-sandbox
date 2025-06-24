@@ -217,6 +217,9 @@ void drawGUI()
         case Material::Acid:
             gfx_PrintString("ACID");
             break;
+        case Material::Steam:
+            gfx_PrintString("STEAM");
+            break;
     }
 
     gfx_PrintStringXY("SZ:", 135, 3);

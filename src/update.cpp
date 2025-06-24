@@ -33,6 +33,9 @@ void update()
                 case Material::Acid:
                     updateAcid(x, y);
                     break;
+                case Material::Steam:
+                    updateSteam(x, y);
+                    break;
             }
         }
     }
@@ -215,4 +218,71 @@ void updateAcid(uint8_t x, uint8_t y)
     // Dissipate
     if (randInt(0, 24) == 0)
         setPixel(CUR_POS, 0);
+}
+
+void updateSteam(uint8_t x, uint8_t y)
+{
+    if (y == 0)
+        return;
+
+    uint8_t above = getPixel(UP);
+
+    if (!above)
+    {
+        switchMat(CUR_POS, UP, Material::Steam);
+        return;
+    }
+
+    if (x > 0 && y > 0 && !getPixel(UP_LEFT))
+    {
+        switchMat(CUR_POS, UP_LEFT, Material::Steam);
+        return;
+    }
+
+    if (x + 1 < WIDTH && y > 0 && !getPixel(UP_RIGHT))
+    {
+        switchMat(CUR_POS, UP_RIGHT, Material::Steam);
+        return;
+    }
+
+    if (above == Material::Water)
+    {
+        switchMat(CUR_POS, UP, Material::Steam, above);
+        return;
+    }
+
+    if (getPixel(DOWN) == Material::Water)
+    {
+        setPixel(DOWN, Material::Steam);
+        return;
+    }
+
+    bool leftFirst = y & 1;
+
+    if (leftFirst)
+    {
+        if (x > 0 && !getPixel(LEFT))
+        {
+            switchMat(CUR_POS, LEFT, Material::Steam);
+            return;
+        }
+        else if (x + 1 < WIDTH && !getPixel(RIGHT))
+        {
+            switchMat(CUR_POS, RIGHT, Material::Steam);
+            return;
+        }
+    }
+    else
+    {
+        if (x + 1 < WIDTH && !getPixel(RIGHT))
+        {
+            switchMat(CUR_POS, RIGHT, Material::Steam);
+            return;
+        }
+        else if (x > 0 && !getPixel(LEFT))
+        {
+            switchMat(CUR_POS, LEFT, Material::Steam);
+            return;
+        }
+    }
 }
