@@ -35,7 +35,7 @@ inline uint24_t IDX(uint8_t x, uint8_t y) { return pixelData.yOffsets[y] + x; }
 
 inline bool IN_BOUNDS(uint8_t x, uint8_t y) { return x < WIDTH && y < HEIGHT; }
 
-inline bool IN_BOUNDS(uint24_t idx) { return idx >= 0 && idx < TOTAL_PIXELS; }
+inline bool IN_BOUNDS(uint24_t idx) { return idx < TOTAL_PIXELS; }
 
 inline uint8_t getPixel(uint8_t x, uint8_t y)
 {
