@@ -13,8 +13,9 @@ void update()
 
         for (x = (flip ? 0 : WIDTH - 1); flip ? x < WIDTH : x != 0xFF; x += (flip ? 1 : -1))
         {
-            if (!pixelData.pixels[rowIdx + x] ||
-                timing.frame - pixelData.lastUpdate[rowIdx + x] >= 2)
+            uint24_t idx = rowIdx + x;
+            if (!pixelData.pixels[idx] || pixelData.updatedFlags[idx] ||
+                timing.frame - pixelData.lastUpdate[idx] >= 2)
                 continue;
 
             uint8_t mat = getPixel(x, y);
