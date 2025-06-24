@@ -56,7 +56,7 @@ void updateAvatarVerticalPos()
     for (uint8_t y = avatar.pos.y; y > GUI_HEIGHT; --y)
 
     {
-        uint8_t scaledY = scaledY = pixelData.divByScaleFactor[y + HALF_OF_AVATAR_HEIGHT + 4];
+        uint8_t scaledY = pixelData.divByScaleFactor[y + HALF_OF_AVATAR_HEIGHT + 4];
         uint8_t intersectingMat = pixelData.activeRows[scaledY] ? getPixel(scaledX, scaledY) : 0;
         if (intersectingMat && isSolid(intersectingMat))
         {
@@ -233,13 +233,13 @@ void updateSteam(uint8_t x, uint8_t y)
         return;
     }
 
-    if (x > 0 && y > 0 && !getPixel(UP_LEFT))
+    if (x > 0 && !getPixel(UP_LEFT))
     {
         switchMat(CUR_POS, UP_LEFT, Material::Steam);
         return;
     }
 
-    if (x + 1 < WIDTH && y > 0 && !getPixel(UP_RIGHT))
+    if (x + 1 < WIDTH && !getPixel(UP_RIGHT))
     {
         switchMat(CUR_POS, UP_RIGHT, Material::Steam);
         return;
