@@ -234,12 +234,12 @@ void drawGUI()
 
 void mainMenu()
 {
-    gfx_FillScreen(16);
+    gfx_FillScreen(56);
 
     gfx_ScaledTransparentSprite_NoClip(title, GFX_LCD_WIDTH / 8, GFX_LCD_HEIGHT / 3, 4, 4);
 
     gfx_SetTextFGColor(255);
-    gfx_SetTextBGColor(16);
+    gfx_SetTextBGColor(56);
     gfx_SetTextTransparentColor(0);
     gfx_SetTextScale(1, 1);
     gfx_PrintStringXY("Press Any Key", GFX_LCD_WIDTH / 5, 170);

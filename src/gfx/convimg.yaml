@@ -16,6 +16,7 @@ palettes:
       - color: {index:  11, hex: "#6bf07c"}
       - color: {index:  12, hex: "#6bd07f"}
       - color: {index:  13, hex: "#62ce62"}
+      - color: {index:  56, hex: "#161079"}
       - color: {index:  57, hex: "#0f0875"}
     images: automatic
 
