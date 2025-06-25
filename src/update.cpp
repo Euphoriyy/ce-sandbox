@@ -81,7 +81,7 @@ void updateAvatarVerticalPos()
 
     if (positionModified)
     {
-        if (newAvatarPos.y - avatar.pos.y > 1)
+        if (newAvatarPos.y - avatar.pos.y != 0)
             clearAvatar();
         avatar.pos = newAvatarPos;
     }
