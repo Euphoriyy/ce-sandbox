@@ -24,8 +24,13 @@ void render()
         memset(pixelData.dirtyRows, 1, HEIGHT);
     }
 
+    // If empty, skip the pixel rendering pass
+    if (!pixelData.activeCount)
+        goto NONPIXEL_RENDERING;
+
     // Draw Pixels
-    for (uint8_t y = 0; pixelData.activeCount && y < HEIGHT; ++y)
+#pragma unroll
+    for (uint8_t y = 0; y < HEIGHT; ++y)
     {
         // Skip static rows
         if (!pixelData.dirtyRows[y])
@@ -119,6 +124,7 @@ void render()
         }
     }
 
+NONPIXEL_RENDERING:
     if (avatar.spawned)
         drawAvatar();
 
@@ -256,6 +262,7 @@ void mainMenu()
 
 void precomputeBgColors()
 {
+#pragma unroll
     for (uint8_t y = 0; y < HEIGHT; ++y)
     {
         // Sample at pixel center
@@ -266,6 +273,7 @@ void precomputeBgColors()
             bgY = background_1_height - 1;
 
         uint24_t rowIdx = IDX(0, y);
+#pragma unroll
         for (uint8_t x = 0; x < WIDTH; ++x)
         {
             uint24_t screenX = x * SCALE_FACTOR + SCALE_FACTOR / 2;
