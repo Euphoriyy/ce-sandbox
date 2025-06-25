@@ -1,6 +1,7 @@
 #pragma once
 
 #include <graphx.h>
+#include <string.h>
 
 #include "game.h"
 #include "gfx/gfx.h"
@@ -57,7 +58,14 @@ inline void setPixel(uint8_t x, uint8_t y, uint8_t mat)
 
     // Adjust the active count
     if (!prevMat && mat)
-        ++pixelData.activeCount; // Increment active count if the new mat is non-zero
+    {
+        if (++pixelData.activeCount == 1) // Increment active count if the new mat is non-zero
+        {
+            // If the new pixel count is 1, rerender the background
+            memset(pixelData.dirtyFlags, 1, TOTAL_PIXELS);
+            memset(pixelData.dirtyRows, 1, HEIGHT);
+        }
+    }
     else if (prevMat && !mat)
         --pixelData.activeCount; // Decrement active count if it is zero
 

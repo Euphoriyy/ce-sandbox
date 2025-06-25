@@ -2,7 +2,6 @@
 
 #include <graphx.h>
 #include <keypadc.h>
-#include <string.h>
 
 #include "pixels.h"
 

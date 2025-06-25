@@ -18,12 +18,6 @@ void render()
     else // Otherwise, copy previous frame
         gfx_BlitScreen();
 
-    if (isImageBackground() && timing.frame == 1)
-    {
-        memset(pixelData.dirtyFlags, 1, TOTAL_PIXELS);
-        memset(pixelData.dirtyRows, 1, HEIGHT);
-    }
-
     // If empty, skip the pixel rendering pass
     if (!pixelData.activeCount)
         goto NONPIXEL_RENDERING;
