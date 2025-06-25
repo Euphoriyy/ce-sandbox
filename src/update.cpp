@@ -1,8 +1,36 @@
 #include "../include/update.h"
 
+static inline void innerUpdateLoop(uint24_t rowIdx, uint8_t x, uint8_t y)
+{
+    uint24_t idx = rowIdx + x;
+    if (!pixelData.pixels[idx] || pixelData.updatedFlags[idx] ||
+        timing.frame - pixelData.lastUpdate[idx] >= 2)
+        return;
+
+    uint8_t mat = getPixel(x, y);
+    switch (mat)
+    {
+        case Material::Sand:
+            updateSand(x, y);
+            break;
+        case Material::Water:
+            updateWater(x, y);
+            break;
+        case Material::Dirt:
+            updateDirt(x, y);
+            break;
+        case Material::Acid:
+            updateAcid(x, y);
+            break;
+        case Material::Steam:
+            updateSteam(x, y);
+            break;
+    }
+}
+
 void update()
 {
-    for (uint8_t y = HEIGHT - 1, x; y != 0xFF; --y)
+    for (uint8_t y = HEIGHT - 1; y != 0xFF; --y)
     {
         // Skip updating rows that are inactive or weren't updated within the last 2 frames
         if (!pixelData.activeRows[y] || timing.frame - pixelData.lastUpdateByRow[y] >= 2)
@@ -11,31 +39,18 @@ void update()
         bool flip = randInt(0, 1);
         uint24_t rowIdx = IDX(0, y);
 
-        for (x = (flip ? 0 : WIDTH - 1); flip ? x < WIDTH : x != 0xFF; x += (flip ? 1 : -1))
+        if (flip)
         {
-            uint24_t idx = rowIdx + x;
-            if (!pixelData.pixels[idx] || pixelData.updatedFlags[idx] ||
-                timing.frame - pixelData.lastUpdate[idx] >= 2)
-                continue;
-
-            uint8_t mat = getPixel(x, y);
-            switch (mat)
+            for (uint8_t x = 0; x < WIDTH; ++x)
             {
-                case Material::Sand:
-                    updateSand(x, y);
-                    break;
-                case Material::Water:
-                    updateWater(x, y);
-                    break;
-                case Material::Dirt:
-                    updateDirt(x, y);
-                    break;
-                case Material::Acid:
-                    updateAcid(x, y);
-                    break;
-                case Material::Steam:
-                    updateSteam(x, y);
-                    break;
+                innerUpdateLoop(rowIdx, x, y);
+            }
+        }
+        else
+        {
+            for (uint8_t x = WIDTH - 1; x != 0xFF; --x)
+            {
+                innerUpdateLoop(rowIdx, x, y);
             }
         }
     }
