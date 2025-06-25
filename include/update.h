@@ -31,6 +31,7 @@ inline void switchMat(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t ma
 void updateSand(uint8_t x, uint8_t y);
 void updateWater(uint8_t x, uint8_t y);
 void updateDirt(uint8_t x, uint8_t y);
+void updateStone(uint8_t x, uint8_t y);
 void updateAcid(uint8_t x, uint8_t y);
 void updateSteam(uint8_t x, uint8_t y);
 void updateAvatarVerticalPos();

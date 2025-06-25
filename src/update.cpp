@@ -19,6 +19,9 @@ static inline void innerUpdateLoop(uint24_t rowIdx, uint8_t x, uint8_t y)
         case Material::Dirt:
             updateDirt(x, y);
             break;
+        case Material::Stone:
+            updateStone(x, y);
+            break;
         case Material::Acid:
             updateAcid(x, y);
             break;
@@ -172,6 +175,29 @@ void updateDirt(uint8_t x, uint8_t y)
     else if (getPixel(DOWN) == Material::Water)
     {
         switchMat(CUR_POS, DOWN, Material::Dirt, Material::Water);
+    }
+}
+
+void updateStone(uint8_t x, uint8_t y)
+{
+    if (gameState.enableFloor && y == HEIGHT - 1)
+        return;
+
+    if (!getPixel(DOWN))
+    {
+        switchMat(CUR_POS, DOWN, Material::Stone);
+    }
+    else if (!getPixel(DOWN_LEFT) && x > 0)
+    {
+        switchMat(CUR_POS, DOWN_LEFT, Material::Stone);
+    }
+    else if (!getPixel(DOWN_RIGHT) && x + 1 < WIDTH)
+    {
+        switchMat(CUR_POS, DOWN_RIGHT, Material::Stone);
+    }
+    else if (getPixel(DOWN) == Material::Water)
+    {
+        switchMat(CUR_POS, DOWN, Material::Stone, Material::Water);
     }
 }
 
