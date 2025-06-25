@@ -154,6 +154,12 @@ void handleInput()
         if (!gameState.enableFloor && pixelData.activeRows[HEIGHT - 1])
         {
             pixelData.lastUpdateByRow[HEIGHT - 1] = timing.frame;
+            uint24_t rowIdx = IDX(0, HEIGHT - 1);
+#pragma unroll
+            for (uint8_t x = 0; x < WIDTH; ++x)
+            {
+                pixelData.lastUpdate[rowIdx + x] = timing.frame;
+            }
         }
     }
 
