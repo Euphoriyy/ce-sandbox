@@ -56,14 +56,15 @@ enum Material
     Dirt,
     Stone,
     Acid,
-    Steam
+    Steam,
+    Wood,
 };
 
 const uint8_t shadeCount = 3;
-constexpr uint8_t materialShades[][shadeCount] = {{0, 1},     {2, 1, 0},    {5, 4, 3},  {6, 7, 8},
-                                                  {9, 0, 10}, {11, 12, 13}, {14, 15, 0}};
-const uint8_t palette[] = {Material::Sand,  Material::Water, Material::Dirt,
-                           Material::Stone, Material::Acid,  Material::Steam};
+constexpr uint8_t materialShades[][shadeCount] = {{0, 1},     {2, 1, 0},    {5, 4, 3},   {6, 7, 8},
+                                                  {9, 0, 10}, {11, 12, 13}, {14, 15, 0}, {16, 17}};
+const uint8_t palette[] = {Material::Sand, Material::Water, Material::Dirt, Material::Stone,
+                           Material::Wood, Material::Acid,  Material::Steam};
 const uint8_t paletteLen = sizeof(palette);
 
 inline bool isSolid(uint8_t mat)

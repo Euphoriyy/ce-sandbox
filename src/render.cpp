@@ -217,6 +217,9 @@ void drawGUI()
         case Material::Stone:
             gfx_PrintString("STONE");
             break;
+        case Material::Wood:
+            gfx_PrintString("WOOD");
+            break;
         case Material::Dirt:
             gfx_PrintString("DIRT");
             break;
