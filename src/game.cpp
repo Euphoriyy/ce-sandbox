@@ -12,19 +12,23 @@ void initAvatarSprites()
 {
     gfx_TempSprite(flippedAvatar0, AVATAR_WIDTH, AVATAR_HEIGHT);
     gfx_TempSprite(flippedAvatar1, AVATAR_WIDTH, AVATAR_HEIGHT);
+    gfx_TempSprite(flippedAvatar2, AVATAR_WIDTH, AVATAR_HEIGHT);
     gfx_FlipSpriteY(avatar0, flippedAvatar0);
     gfx_FlipSpriteY(avatar1, flippedAvatar1);
+    gfx_FlipSpriteY(avatar2, flippedAvatar2);
 
-    avatar.sprite0 = gfx_ConvertMallocRLETSprite(avatar0);
-    avatar.sprite1 = gfx_ConvertMallocRLETSprite(avatar1);
-    avatar.flippedSprite0 = gfx_ConvertMallocRLETSprite(flippedAvatar0);
-    avatar.flippedSprite1 = gfx_ConvertMallocRLETSprite(flippedAvatar1);
+    avatar.sprites[0][0] = gfx_ConvertMallocRLETSprite(avatar0);
+    avatar.sprites[1][0] = gfx_ConvertMallocRLETSprite(avatar1);
+    avatar.sprites[2][0] = gfx_ConvertMallocRLETSprite(avatar2);
+    avatar.sprites[0][1] = gfx_ConvertMallocRLETSprite(flippedAvatar0);
+    avatar.sprites[1][1] = gfx_ConvertMallocRLETSprite(flippedAvatar1);
+    avatar.sprites[2][1] = gfx_ConvertMallocRLETSprite(flippedAvatar2);
 }
 
 void resetAvatar()
 {
     avatar.pos = Avatar::defaultPos;
-    avatar.switchSprite = false;
+    avatar.spriteState = Avatar::Sprite::Standing;
 }
 
 void clearCursor()

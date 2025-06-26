@@ -52,7 +52,16 @@ void handleInput()
         if (avatar.pos.x < GFX_LCD_WIDTH - AVATAR_WIDTH && avatarCanMoveHorizontally(1))
         {
             if (avatar.pos.x & 3)
-                avatar.switchSprite = !avatar.switchSprite;
+            {
+                if (avatar.spriteState == Avatar::Sprite::Standing)
+                {
+                    avatar.spriteState = Avatar::Sprite::Walking;
+                }
+                else if (avatar.spriteState == Avatar::Sprite::Walking)
+                {
+                    avatar.spriteState = Avatar::Sprite::Standing;
+                }
+            }
             nx += avatar.speed;
             avatarMoved = true;
         }
@@ -77,7 +86,16 @@ void handleInput()
         if (avatar.pos.x > 0 && avatarCanMoveHorizontally(-1))
         {
             if (avatar.pos.x & 3)
-                avatar.switchSprite = !avatar.switchSprite;
+            {
+                if (avatar.spriteState == Avatar::Sprite::Standing)
+                {
+                    avatar.spriteState = Avatar::Sprite::Walking;
+                }
+                else if (avatar.spriteState == Avatar::Sprite::Walking)
+                {
+                    avatar.spriteState = Avatar::Sprite::Standing;
+                }
+            }
             nx -= avatar.speed;
             avatarMoved = true;
         }
@@ -101,15 +119,17 @@ void handleInput()
             clearAvatar();
             avatar.pos.y -= jumpHeight;
             avatar.frameAtLastJump = timing.frame;
+            avatar.spriteState = Avatar::Sprite::Jumping;
             avatarMoved = true;
         }
     }
 
     // Reset Avatar Sprite When Still
-    if (!avatarMoved && avatar.switchSprite)
+    if ((!avatarMoved && avatar.spriteState == Avatar::Sprite::Walking) ||
+        (avatarIsGrounded() && avatar.spriteState == Avatar::Sprite::Jumping))
     {
         clearAvatar();
-        avatar.switchSprite = false;
+        avatar.spriteState = Avatar::Sprite::Standing;
     }
 
     // Get Current Key State

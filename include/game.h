@@ -36,16 +36,25 @@ struct Avatar
 {
     enum Orientation
     {
+        Right,
         Left,
-        Right
+        OrientationCount
+    };
+    enum Sprite
+    {
+        Standing,
+        Walking,
+        Jumping,
+        SpriteCount
     };
     static Vector2_24 defaultPos;
     Vector2_24 pos = defaultPos;
-    Orientation orientation = Avatar::Orientation::Right;
-    bool spawned = false, switchSprite = false;
+    Orientation orientation = Orientation::Right;
+    bool spawned = false;
+    Sprite spriteState = Sprite::Standing;
     uint8_t speed = 2;
     uint24_t frameAtLastJump = 0;
-    gfx_rletsprite_t *sprite0, *flippedSprite0, *sprite1, *flippedSprite1;
+    gfx_rletsprite_t *sprites[SpriteCount][OrientationCount];
 };
 
 enum Material

@@ -33,6 +33,7 @@ converts:
       - title.png
       - avatar0.png
       - avatar1.png
+      - avatar2.png
 
 outputs:
   - type: c

@@ -133,16 +133,7 @@ NONPIXEL_RENDERING:
 
 void drawAvatar()
 {
-    gfx_rletsprite_t *sprite;
-    if (avatar.orientation == Avatar::Orientation::Right)
-        if (!avatar.switchSprite)
-            sprite = avatar.sprite0;
-        else
-            sprite = avatar.sprite1;
-    else if (!avatar.switchSprite)
-        sprite = avatar.flippedSprite0;
-    else
-        sprite = avatar.flippedSprite1;
+    gfx_rletsprite_t *sprite = avatar.sprites[avatar.spriteState][avatar.orientation];
     gfx_RLETSprite(sprite, avatar.pos.x, avatar.pos.y);
 }
 
