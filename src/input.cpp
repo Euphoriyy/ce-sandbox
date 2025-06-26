@@ -95,10 +95,14 @@ void handleInput()
         avatar.pos.y > pixelData.divByScaleFactor[AVATAR_HEIGHT] && avatarIsGrounded() &&
         pixelData.activeCount && timing.frame - avatar.frameAtLastJump >= 10)
     {
-        clearAvatar();
-        avatar.pos.y -= SCALE_FACTOR * 4;
-        avatar.frameAtLastJump = timing.frame;
-        avatarMoved = true;
+        constexpr uint8_t jumpHeight = SCALE_FACTOR * 4;
+        if (avatar.pos.y >= GUI_HEIGHT + jumpHeight)
+        {
+            clearAvatar();
+            avatar.pos.y -= jumpHeight;
+            avatar.frameAtLastJump = timing.frame;
+            avatarMoved = true;
+        }
     }
 
     // Reset Avatar Sprite When Still
