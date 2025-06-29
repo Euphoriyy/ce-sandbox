@@ -24,6 +24,9 @@ int main(void)
     cursor.size = SCALE_FACTOR;
     cursor.pos = {WIDTH / 2, HEIGHT / 2};
 
+    // Mark selected points as unselected
+    initSelectedPoints();
+
     // Prevent the ON key from staying pressed
     kb_DisableOnLatch();
 

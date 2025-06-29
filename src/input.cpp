@@ -145,6 +145,7 @@ void handleInput()
     keyState.cur.apps = kb_IsDown(kb_KeyApps);
     keyState.cur.sto = kb_IsDown(kb_KeySto);
     keyState.cur.on = kb_On;
+    keyState.cur.ln = kb_IsDown(kb_KeyLn);
 
     // Toggle Drawing Mode
     if (keyState.cur.enter && !keyState.prev.enter)
@@ -246,10 +247,36 @@ void handleInput()
         loadSave("SANDSAVE");
     }
 
+    // Select Points
+    if (keyState.cur.ln && !keyState.prev.ln && !gameState.isDrawing && !gameState.isErasing)
+    {
+        if (!pointIsSelected(0)) // Set the first point to the cursor's position if unselected
+        {
+            cursor.selectedPoints[0] = cursor.pos;
+        }
+        else if (!pointIsSelected(1)) // Set the second point to the cursor's position if unselected
+        {
+            cursor.selectedPoints[1] = cursor.pos;
+        }
+        else // Clear the selected points
+        {
+            clearPointOutline(cursor.selectedPoints[0]);
+            clearPointOutline(cursor.selectedPoints[1]);
+            cursor.selectedPoints[0] = cursor.selectedPoints[1] = {0xFF, 0xFF};
+        }
+    }
+
     // Draw or Erase Based on Current Mode
     if (gameState.isDrawing)
     {
-        if (gameState.brushSize == 1)
+        if (pointIsSelected(0) && pointIsSelected(1))
+        {
+            // Draw a line
+            drawLine(cursor.selectedPoints[0], cursor.selectedPoints[1], gameState.brushSize,
+                     palette[cursor.paletteIndex]);
+            gameState.isDrawing = false;
+        }
+        else if (gameState.brushSize == 1)
         {
             if (!getPixel(cursor.pos.x, cursor.pos.y))
                 setPixel(cursor.pos.x, cursor.pos.y, palette[cursor.paletteIndex]);
@@ -264,7 +291,14 @@ void handleInput()
     }
     else if (gameState.isErasing)
     {
-        if (gameState.brushSize == 1)
+        if (pointIsSelected(0) && pointIsSelected(1))
+        {
+            // Erase a line
+            drawLine(cursor.selectedPoints[0], cursor.selectedPoints[1], gameState.brushSize,
+                     Material::Empty);
+            gameState.isErasing = false;
+        }
+        else if (gameState.brushSize == 1)
         {
             if (getPixel(cursor.pos.x, cursor.pos.y))
                 setPixel(cursor.pos.x, cursor.pos.y, Material::Empty);

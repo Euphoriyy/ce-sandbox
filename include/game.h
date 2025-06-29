@@ -8,10 +8,13 @@ struct KeyState
     struct Keys
     {
         bool enter = false, del = false, yequ = false, graph = false, second = false, zoom = false,
-             window = false, trace = false, graphVar = false, apps = false, sto = false, on = false;
+             window = false, trace = false, graphVar = false, apps = false, sto = false, on = false,
+             ln = false;
     };
     Keys prev, cur;
 };
+
+constexpr uint8_t MAX_SELECTED_POINTS = 2;
 
 struct Cursor
 {
@@ -19,6 +22,7 @@ struct Cursor
     uint8_t color = 255;
     uint8_t size;
     uint8_t paletteIndex = 0;
+    Vector2 selectedPoints[MAX_SELECTED_POINTS];
 };
 
 struct GameState
@@ -92,3 +96,10 @@ void clearCursor();
 void clearAvatar();
 bool avatarCanMoveHorizontally(int8_t offset);
 bool avatarIsGrounded();
+void initSelectedPoints();
+void clearPointOutline(Vector2 pos);
+
+inline bool pointIsSelected(uint8_t index)
+{
+    return cursor.selectedPoints[index].x != 0xFF && cursor.selectedPoints[index].y != 0xFF;
+}

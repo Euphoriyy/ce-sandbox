@@ -122,6 +122,14 @@ NONPIXEL_RENDERING:
     if (avatar.spawned)
         drawAvatar();
 
+    // Outline the selected points
+#pragma unroll
+    for (uint8_t i = 0; i < MAX_SELECTED_POINTS; ++i)
+    {
+        if (pointIsSelected(i))
+            drawPointOutline(cursor.selectedPoints[i]);
+    }
+
     drawCursor();
 
     drawGUI();
@@ -135,6 +143,14 @@ void drawAvatar()
 {
     gfx_rletsprite_t *sprite = avatar.sprites[avatar.spriteState][avatar.orientation];
     gfx_RLETSprite(sprite, avatar.pos.x, avatar.pos.y);
+}
+
+void drawPointOutline(Vector2 pos)
+{
+    gfx_SetColor(cursor.color);
+    uint24_t scaledX = pos.x * SCALE_FACTOR;
+    uint24_t scaledY = pos.y * SCALE_FACTOR + GUI_HEIGHT;
+    gfx_Rectangle(scaledX - 1, scaledY - 1, SCALE_FACTOR + 2, SCALE_FACTOR + 2);
 }
 
 void drawCursor()

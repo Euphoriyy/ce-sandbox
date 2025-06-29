@@ -109,3 +109,71 @@ bool avatarIsGrounded()
     uint8_t mat = getPixel(scaledX, bottomY + 1);
     return (mat && isSolid(mat)) || bottomY >= HEIGHT - 1;
 }
+
+void initSelectedPoints() {
+    memset(cursor.selectedPoints, 0xFF, sizeof(cursor.selectedPoints));
+}
+
+void clearPointOutline(Vector2 pos)
+{
+    if (!pixelData.activeCount)
+        return;
+
+    uint24_t idx = IDX(pos.x, pos.y);
+    uint24_t upIdx = idx - WIDTH;
+    uint24_t downIdx = idx + WIDTH;
+
+    // Clear Pixel Up
+    if (IN_BOUNDS(upIdx))
+    {
+        pixelData.dirtyFlags[upIdx] = true;
+        pixelData.dirtyRows[pos.y - 1] = true;
+    }
+
+    // Clear Pixel Up Left
+    if (IN_BOUNDS(upIdx - 1))
+    {
+        pixelData.dirtyFlags[upIdx - 1] = true;
+    }
+    // Clear Pixel Up Right
+    if (IN_BOUNDS(upIdx + 1))
+    {
+        pixelData.dirtyFlags[upIdx + 1] = true;
+    }
+
+    // CLear Pixel Left
+    if (IN_BOUNDS(idx - 1))
+    {
+        pixelData.dirtyFlags[idx - 1] = true;
+        pixelData.dirtyRows[pos.y] = true;
+    }
+    // Clear Pixel Right
+    if (IN_BOUNDS(idx + 1))
+    {
+        pixelData.dirtyFlags[idx + 1] = true;
+        pixelData.dirtyRows[pos.y] = true;
+    }
+
+    // Clear Pixel Down
+    if (IN_BOUNDS(downIdx))
+    {
+        pixelData.dirtyFlags[downIdx] = true;
+        pixelData.dirtyRows[pos.y + 1] = true;
+    }
+    else // Clear Pixel at Position
+    {
+        pixelData.dirtyFlags[idx] = true;
+        pixelData.dirtyRows[pos.y] = true;
+    }
+
+    // Clear Pixel Down Left
+    if (IN_BOUNDS(downIdx - 1))
+    {
+        pixelData.dirtyFlags[downIdx - 1] = true;
+    }
+    // Clear Pixel Down Right
+    if (IN_BOUNDS(downIdx + 1))
+    {
+        pixelData.dirtyFlags[downIdx + 1] = true;
+    }
+}
