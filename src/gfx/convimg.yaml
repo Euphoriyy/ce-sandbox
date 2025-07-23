@@ -34,6 +34,8 @@ converts:
       - avatar0.png
       - avatar1.png
       - avatar2.png
+      - brush_icon.png
+      - eraser_icon.png
 
 outputs:
   - type: c
