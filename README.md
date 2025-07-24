@@ -17,6 +17,7 @@ The controls for the game are the following:
 | Pause Game          | <kbd>2nd               </kbd> |
 | Save Game           | <kbd>sto→              </kbd> |
 | Load Game           | <kbd>on                </kbd> |
+| Clear/Reset         | <kbd>clear             </kbd> |
 | Exit Game           | <kbd>mode              </kbd> |
 | Previous Material   | <kbd>y=                </kbd> |
 | Next Material       | <kbd>graph             </kbd> |
