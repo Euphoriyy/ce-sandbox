@@ -147,6 +147,7 @@ void handleInput()
     keyState.cur.on = kb_On;
     keyState.cur.ln = kb_IsDown(kb_KeyLn);
     keyState.cur.decPnt = kb_IsDown(kb_KeyDecPnt);
+    keyState.cur.power = kb_IsDown(kb_KeyPower);
 
     // Toggle Drawing Mode
     if (keyState.cur.enter && !keyState.prev.enter)
@@ -284,6 +285,20 @@ void handleInput()
             cursor.largeSprite = true;
         else
             cursor.spriteCursor = cursor.largeSprite = false;
+    }
+
+    // Pick Material
+    if (keyState.cur.power && !keyState.prev.power)
+    {
+        uint8_t mat = pixelData.pixels[IDX(cursor.pos.x, cursor.pos.y)];
+        if (mat)
+        {
+            for (uint8_t i = 0; i < paletteLen; ++i)
+            {
+                if (palette[i] == mat)
+                    cursor.paletteIndex = i;
+            }
+        }
     }
 
     // Draw or Erase Based on Current Mode

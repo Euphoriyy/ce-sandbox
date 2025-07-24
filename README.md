@@ -16,6 +16,7 @@ The controls for the game are the following:
 | Toggle Circle Brush | <kbd>xton              </kbd> |
 | Previous Material   | <kbd>y=                </kbd> |
 | Next Material       | <kbd>graph             </kbd> |
+| Pick Material       | <kbd>⋀                 </kbd> |
 | Decrease Brush Size | <kbd>window            </kbd> |
 | Increase Brush Size | <kbd>trace             </kbd> |
 | Toggle Floor        | <kbd>zoom              </kbd> |
