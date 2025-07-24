@@ -14,16 +14,16 @@ The controls for the game are the following:
 | Toggle Drawing      | <kbd>enter             </kbd> |
 | Toggle Erasing      | <kbd>del               </kbd> |
 | Toggle Circle Brush | <kbd>xton              </kbd> |
-| Pause Game          | <kbd>2nd               </kbd> |
-| Save Game           | <kbd>sto→              </kbd> |
-| Load Game           | <kbd>on                </kbd> |
-| Clear/Reset         | <kbd>clear             </kbd> |
-| Exit Game           | <kbd>mode              </kbd> |
 | Previous Material   | <kbd>y=                </kbd> |
 | Next Material       | <kbd>graph             </kbd> |
 | Decrease Brush Size | <kbd>window            </kbd> |
 | Increase Brush Size | <kbd>trace             </kbd> |
 | Toggle Floor        | <kbd>zoom              </kbd> |
+| Pause Game          | <kbd>2nd               </kbd> |
+| Save Game           | <kbd>sto→              </kbd> |
+| Load Game           | <kbd>on                </kbd> |
+| Clear/Reset         | <kbd>clear             </kbd> |
+| Exit Game           | <kbd>mode              </kbd> |
 | Line Tool           | <kbd>ln                </kbd> |
 | (De)Spawn Avatar    | <kbd>apps              </kbd> |
 | Move Avatar Left    | <kbd>sin               </kbd> |
