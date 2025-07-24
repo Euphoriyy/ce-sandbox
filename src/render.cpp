@@ -156,14 +156,48 @@ void drawPointOutline(Vector2 pos)
 void drawCursor()
 {
     gfx_SetColor(cursor.color);
-    // A brush size of 2 otherwise causes the cursor to be off-center
-    uint24_t cx = cursor.pos.x * cursor.size + cursor.size / (2 * gameState.brushSize) -
-                  (gameState.brushSize == 2);
-    uint24_t cy = cursor.pos.y * cursor.size + GUI_HEIGHT +
-                  cursor.size / (2 * gameState.brushSize) - (gameState.brushSize == 2);
-    gfx_HorizLine(cx - cursor.size * gameState.brushSize, cy,
-                  cursor.size * 2 * gameState.brushSize);
-    gfx_VertLine(cx, cy - cursor.size * gameState.brushSize, cursor.size * 2 * gameState.brushSize);
+
+    // Draw Crosshair
+    if (!cursor.spriteCursor)
+    {
+        // A brush size of 2 otherwise causes the cursor to be off-center
+        uint24_t cx = cursor.pos.x * cursor.size + cursor.size / (2 * gameState.brushSize) -
+                      (gameState.brushSize == 2);
+        uint24_t cy = cursor.pos.y * cursor.size + GUI_HEIGHT +
+                      cursor.size / (2 * gameState.brushSize) - (gameState.brushSize == 2);
+        gfx_HorizLine(cx - cursor.size * gameState.brushSize, cy,
+                      (cursor.size << 1) * gameState.brushSize);
+        gfx_VertLine(cx, cy - cursor.size * gameState.brushSize,
+                     (cursor.size << 1) * gameState.brushSize);
+        return;
+    }
+
+    // Draw Sprite Cursor
+    if (cursor.largeSprite)
+    {
+        if (gameState.isDrawing)
+            gfx_RLETSprite(cursor.sprites[0][1], cursor.pos.x * cursor.size,
+                           cursor.pos.y * cursor.size - brush_cursor_height);
+        else if (gameState.isErasing)
+            gfx_RLETSprite(cursor.sprites[1][1], cursor.pos.x * cursor.size - 2,
+                           cursor.pos.y * cursor.size - eraser_cursor_height + 2);
+        else
+            gfx_RLETSprite(cursor.sprites[2][1], cursor.pos.x * cursor.size,
+                           cursor.pos.y * cursor.size - hand_cursor_height -
+                               (hand_cursor_height - hand_cursor_width));
+    }
+    else
+    {
+        if (gameState.isDrawing)
+            gfx_RLETSprite(cursor.sprites[0][0], cursor.pos.x * cursor.size,
+                           cursor.pos.y * cursor.size);
+        else if (gameState.isErasing)
+            gfx_RLETSprite(cursor.sprites[1][0], cursor.pos.x * cursor.size,
+                           cursor.pos.y * cursor.size);
+        else
+            gfx_RLETSprite(cursor.sprites[2][0], cursor.pos.x * cursor.size,
+                           cursor.pos.y * cursor.size - (hand_cursor_height - hand_cursor_width));
+    }
 }
 
 void drawGUI()

@@ -28,3 +28,4 @@ The controls for the game are the following:
 | Move Avatar Left    | <kbd>sin               </kbd> |
 | Move Avatar Right   | <kbd>tan               </kbd> |
 | Make Avatar Jump    | <kbd>prgm              </kbd> |
+| Cycle Cursor Styles | <kbd>.                 </kbd> |

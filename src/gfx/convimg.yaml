@@ -36,6 +36,9 @@ converts:
       - avatar2.png
       - brush_icon.png
       - eraser_icon.png
+      - brush_cursor.png
+      - eraser_cursor.png
+      - hand_cursor.png
 
 outputs:
   - type: c

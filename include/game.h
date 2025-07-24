@@ -9,7 +9,7 @@ struct KeyState
     {
         bool enter = false, del = false, yequ = false, graph = false, second = false, zoom = false,
              window = false, trace = false, graphVar = false, apps = false, sto = false, on = false,
-             ln = false;
+             ln = false, decPnt = false;
     };
     Keys prev, cur;
 };
@@ -18,11 +18,26 @@ constexpr uint8_t MAX_SELECTED_POINTS = 2;
 
 struct Cursor
 {
+    enum Sprite
+    {
+        Brush,
+        Eraser,
+        Hand,
+        SpriteCount
+    };
+    enum SpriteSize
+    {
+        Normal,
+        Large,
+        SizeCount
+    };
     Vector2 pos;
     uint8_t color = 255;
     uint8_t size;
     uint8_t paletteIndex = 0;
+    bool spriteCursor = false, largeSprite = false;
     Vector2 selectedPoints[MAX_SELECTED_POINTS];
+    gfx_rletsprite_t *sprites[SpriteCount][SizeCount];
 };
 
 struct GameState
@@ -90,6 +105,7 @@ extern KeyState keyState;
 extern GameState gameState;
 extern Avatar avatar;
 
+void initCursorSprites();
 void initAvatarSprites();
 void resetAvatar();
 void clearCursor();

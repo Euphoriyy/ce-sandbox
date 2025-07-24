@@ -146,10 +146,14 @@ void handleInput()
     keyState.cur.sto = kb_IsDown(kb_KeySto);
     keyState.cur.on = kb_On;
     keyState.cur.ln = kb_IsDown(kb_KeyLn);
+    keyState.cur.decPnt = kb_IsDown(kb_KeyDecPnt);
 
     // Toggle Drawing Mode
     if (keyState.cur.enter && !keyState.prev.enter)
     {
+        if (cursor.spriteCursor)
+            clearCursor();
+
         gameState.isDrawing = !gameState.isDrawing;
         if (gameState.isDrawing)
             gameState.isErasing = false;
@@ -158,6 +162,9 @@ void handleInput()
     // Toggle Erasing Mode
     if (keyState.cur.del && !keyState.prev.del)
     {
+        if (cursor.spriteCursor)
+            clearCursor();
+
         gameState.isErasing = !gameState.isErasing;
         if (gameState.isErasing)
             gameState.isDrawing = false;
@@ -264,6 +271,19 @@ void handleInput()
             clearPointOutline(cursor.selectedPoints[1]);
             cursor.selectedPoints[0] = cursor.selectedPoints[1] = {0xFF, 0xFF};
         }
+    }
+
+    // Cycle Cursor Styles
+    if (keyState.cur.decPnt && !keyState.prev.decPnt)
+    {
+        clearCursor();
+
+        if (!cursor.spriteCursor)
+            cursor.spriteCursor = true;
+        else if (!cursor.largeSprite)
+            cursor.largeSprite = true;
+        else
+            cursor.spriteCursor = cursor.largeSprite = false;
     }
 
     // Draw or Erase Based on Current Mode

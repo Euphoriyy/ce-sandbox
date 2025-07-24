@@ -8,6 +8,23 @@ KeyState keyState;
 GameState gameState;
 Avatar avatar;
 
+void initCursorSprites()
+{
+    gfx_TempSprite(largeBrush, brush_cursor_width << 1, brush_cursor_height << 1);
+    gfx_TempSprite(largeEraser, eraser_cursor_width << 1, eraser_cursor_height << 1);
+    gfx_TempSprite(largeHand, hand_cursor_width << 1, hand_cursor_height << 1);
+    gfx_ScaleSprite(brush_cursor, largeBrush);
+    gfx_ScaleSprite(eraser_cursor, largeEraser);
+    gfx_ScaleSprite(hand_cursor, largeHand);
+
+    cursor.sprites[0][0] = gfx_ConvertMallocRLETSprite(brush_cursor);
+    cursor.sprites[1][0] = gfx_ConvertMallocRLETSprite(eraser_cursor);
+    cursor.sprites[2][0] = gfx_ConvertMallocRLETSprite(hand_cursor);
+    cursor.sprites[0][1] = gfx_ConvertMallocRLETSprite(largeBrush);
+    cursor.sprites[1][1] = gfx_ConvertMallocRLETSprite(largeEraser);
+    cursor.sprites[2][1] = gfx_ConvertMallocRLETSprite(largeHand);
+}
+
 void initAvatarSprites()
 {
     gfx_TempSprite(flippedAvatar0, AVATAR_WIDTH, AVATAR_HEIGHT);
@@ -36,14 +53,39 @@ void clearCursor()
     if (!pixelData.activeCount)
         return;
 
-    uint8_t offsetBrushSize = gameState.brushSize + 1;
-    for (int8_t dx = -offsetBrushSize; dx < offsetBrushSize; ++dx)
+    if (!cursor.spriteCursor)
     {
-        makeDirty(cursor.pos.x + dx, cursor.pos.y);
+        uint8_t offsetBrushSize = gameState.brushSize + 1;
+        for (int8_t dx = -offsetBrushSize; dx < offsetBrushSize; ++dx)
+        {
+            makeDirty(cursor.pos.x + dx, cursor.pos.y);
+        }
+        for (int8_t dy = -offsetBrushSize; dy < offsetBrushSize; ++dy)
+        {
+            makeDirty(cursor.pos.x, cursor.pos.y + dy);
+        }
+        return;
     }
-    for (int8_t dy = -offsetBrushSize; dy < offsetBrushSize; ++dy)
+
+    uint8_t horizontalScaledSize, verticalScaledSize;
+
+    // Scale to the size of the hand cursor (which is the maximum sprite size)
+    if (cursor.largeSprite)
     {
-        makeDirty(cursor.pos.x, cursor.pos.y + dy);
+        horizontalScaledSize = pixelData.divByScaleFactor[hand_cursor_width << 1];
+        verticalScaledSize = pixelData.divByScaleFactor[hand_cursor_height << 1];
+    }
+    else
+    {
+        horizontalScaledSize = verticalScaledSize = pixelData.divByScaleFactor[hand_cursor_width];
+    }
+
+    for (int8_t dy = -verticalScaledSize; dy <= 1; ++dy)
+    {
+        for (int8_t dx = -1; dx < horizontalScaledSize + 1; ++dx)
+        {
+            makeDirty(cursor.pos.x + dx, cursor.pos.y + dy);
+        }
     }
 }
 
@@ -110,9 +152,7 @@ bool avatarIsGrounded()
     return (mat && isSolid(mat)) || bottomY >= HEIGHT - 1;
 }
 
-void initSelectedPoints() {
-    memset(cursor.selectedPoints, 0xFF, sizeof(cursor.selectedPoints));
-}
+void initSelectedPoints() { memset(cursor.selectedPoints, 0xFF, sizeof(cursor.selectedPoints)); }
 
 void clearPointOutline(Vector2 pos)
 {
@@ -141,7 +181,7 @@ void clearPointOutline(Vector2 pos)
         pixelData.dirtyFlags[upIdx + 1] = true;
     }
 
-    // CLear Pixel Left
+    // Clear Pixel Left
     if (IN_BOUNDS(idx - 1))
     {
         pixelData.dirtyFlags[idx - 1] = true;

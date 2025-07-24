@@ -43,6 +43,7 @@ int main(void)
     uint24_t lastTick = timer_GetSafe(1, TIMER_UP), currentTick;
 
     precomputeBgColors();
+    initCursorSprites();
     initAvatarSprites();
 
     while (!kb_IsDown(kb_KeyMode))
