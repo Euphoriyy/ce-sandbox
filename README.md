@@ -3,7 +3,7 @@
 CE-Sandbox is a falling-sand game & simulation made for TI-84 Plus CE calculators.
 
 # Installation
-Either download the .8xp file or compile the source directly. Then, transfer it onto the calculator using either [TI Connect CE](https://education.ti.com/en/products/computer-software/ti-connect-ce-sw) or [transfer](https://github.com/jacobly0/transfer).
+Either download the .8xp file or compile the source directly. Then, transfer it onto the calculator using either [TI Connect CE](https://education.ti.com/en/products/computer-software/ti-connect-ce-sw), [TiLP](http://lpg.ticalc.org/prj_tilp/), [ticalc.link](https://ticalc.link/), or [transfer](https://github.com/jacobly0/transfer).
 The [CE Libraries](https://github.com/CE-Programming/libraries/releases) are necessary for this game to function.
 
 # Controls
