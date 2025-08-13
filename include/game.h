@@ -23,6 +23,7 @@ struct Cursor
         Brush,
         Eraser,
         Hand,
+        Pinching,
         SpriteCount
     };
     enum SpriteSize
@@ -31,11 +32,12 @@ struct Cursor
         Large,
         SizeCount
     };
-    Vector2 pos;
+    Vector2 prevPos, pos;
     uint8_t color = 255;
     uint8_t size;
     uint8_t paletteIndex = 0;
-    bool spriteCursor = false, largeSprite = false;
+    bool spriteCursor = false, largeSprite = false, pinching = false, movedThisFrame = false;
+    uint24_t pinchedPixel;
     Vector2 selectedPoints[MAX_SELECTED_POINTS];
     gfx_rletsprite_t *sprites[SpriteCount][SizeCount];
 };
@@ -64,6 +66,7 @@ struct Avatar
         Standing,
         Walking,
         Jumping,
+        Hanging,
         SpriteCount
     };
     static Vector2_24 defaultPos;
@@ -114,6 +117,7 @@ bool avatarCanMoveHorizontally(int8_t offset);
 bool avatarIsGrounded();
 void initSelectedPoints();
 void clearPointOutline(Vector2 pos);
+bool cursorIntersectingAvatar();
 
 inline bool pointIsSelected(uint8_t index)
 {

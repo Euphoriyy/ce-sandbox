@@ -20,6 +20,7 @@ The controls for the game are the following:
 | Decrease Brush Size | <kbd>window            </kbd> |
 | Increase Brush Size | <kbd>trace             </kbd> |
 | Toggle Floor        | <kbd>zoom              </kbd> |
+| Pinch Cursor        | <kbd>alpha             </kbd> |
 | Pause Game          | <kbd>2nd               </kbd> |
 | Save Game           | <kbd>sto→              </kbd> |
 | Load Game           | <kbd>on                </kbd> |

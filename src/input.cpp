@@ -18,22 +18,42 @@ void handleInput()
 
     if (kb_IsDown(kb_KeyRight) && cursor.pos.x < WIDTH - 1)
     {
-        clearCursor();
+        if (!cursor.movedThisFrame)
+        {
+            clearCursor();
+            cursor.prevPos = cursor.pos;
+            cursor.movedThisFrame = true;
+        }
         ++cursor.pos.x;
     }
     if (kb_IsDown(kb_KeyLeft) && cursor.pos.x > 0)
     {
-        clearCursor();
+        if (!cursor.movedThisFrame)
+        {
+            clearCursor();
+            cursor.prevPos = cursor.pos;
+            cursor.movedThisFrame = true;
+        }
         --cursor.pos.x;
     }
     if (kb_IsDown(kb_KeyDown) && cursor.pos.y < HEIGHT - 1)
     {
-        clearCursor();
+        if (!cursor.movedThisFrame)
+        {
+            clearCursor();
+            cursor.prevPos = cursor.pos;
+            cursor.movedThisFrame = true;
+        }
         ++cursor.pos.y;
     }
     if (kb_IsDown(kb_KeyUp) && cursor.pos.y > 0)
     {
-        clearCursor();
+        if (!cursor.movedThisFrame)
+        {
+            clearCursor();
+            cursor.prevPos = cursor.pos;
+            cursor.movedThisFrame = true;
+        }
         --cursor.pos.y;
     }
 
@@ -49,7 +69,8 @@ void handleInput()
         avatar.orientation = Avatar::Orientation::Right;
 
         // Check if avatar can move to the right
-        if (avatar.pos.x < GFX_LCD_WIDTH - AVATAR_WIDTH && avatarCanMoveHorizontally(1))
+        if (avatar.pos.x < GFX_LCD_WIDTH - AVATAR_WIDTH && avatarCanMoveHorizontally(1) &&
+            avatar.spriteState != Avatar::Sprite::Hanging)
         {
             if (avatar.pos.x & 3)
             {
@@ -83,7 +104,8 @@ void handleInput()
         avatar.orientation = Avatar::Orientation::Left;
 
         // Check if avatar can move to the left
-        if (avatar.pos.x > 0 && avatarCanMoveHorizontally(-1))
+        if (avatar.pos.x > 0 && avatarCanMoveHorizontally(-1) &&
+            avatar.spriteState != Avatar::Sprite::Hanging)
         {
             if (avatar.pos.x & 3)
             {
@@ -130,6 +152,95 @@ void handleInput()
     {
         clearAvatar();
         avatar.spriteState = Avatar::Sprite::Standing;
+    }
+
+    // Pinching
+    if (!gameState.isDrawing && !gameState.isErasing && kb_IsDown(kb_KeyAlpha))
+    {
+        // Set cursor to pinching
+        if (!cursor.pinching)
+        {
+            clearCursor();
+            cursor.pinching = true;
+        }
+
+        // Pinching Avatar
+        if (pixelData.activeCount && cursorIntersectingAvatar() && !IN_BOUNDS(cursor.pinchedPixel))
+        {
+            avatar.spriteState = Avatar::Sprite::Hanging;
+
+            // Clamp cursor position within screen bounds
+            if (cursor.pos.x > WIDTH - pixelData.divByScaleFactor[pinching_cursor_width])
+            {
+                cursor.pos.x = WIDTH - pixelData.divByScaleFactor[pinching_cursor_width];
+            }
+            if (cursor.pos.y < pixelData.divByScaleFactor[pinching_cursor_height])
+            {
+                cursor.pos.y = pixelData.divByScaleFactor[pinching_cursor_height];
+            }
+            else if (cursor.pos.y > HEIGHT - pixelData.divByScaleFactor[pinching_cursor_height] - 1)
+            {
+                cursor.pos.y = HEIGHT - pixelData.divByScaleFactor[pinching_cursor_height] - 1;
+            }
+
+            // Keep cursor above the avatar
+            if (cursor.pos.y > pixelData.divByScaleFactor[avatar.pos.y])
+            {
+                cursor.pos.y = pixelData.divByScaleFactor[avatar.pos.y - 5];
+            }
+
+            Vector2_24 newPos;
+
+            // Calculate the avatar's new position
+            newPos.x = cursor.pos.x * SCALE_FACTOR;
+            newPos.y = cursor.pos.y * SCALE_FACTOR + SCALE_FACTOR;
+
+            if (avatar.pos.x != newPos.x || avatar.pos.y != newPos.y)
+            {
+                clearAvatar();
+            }
+
+            // Set new position coordinates if within bounds
+            if (newPos.x >= 0 && newPos.x < GFX_LCD_WIDTH - AVATAR_WIDTH)
+            {
+                const uint8_t ORIENTATION_OFFSET = 5, DISTANCE_TO_SIDE = 25;
+                if (avatar.orientation == Avatar::Orientation::Left &&
+                    newPos.x - ORIENTATION_OFFSET >= 0 &&
+                    newPos.x - ORIENTATION_OFFSET < GFX_LCD_WIDTH - DISTANCE_TO_SIDE)
+                {
+                    newPos.x -= ORIENTATION_OFFSET;
+                }
+
+                avatar.pos.x = newPos.x;
+            }
+            if (newPos.y >= 0 && newPos.y < GFX_LCD_HEIGHT - AVATAR_HEIGHT)
+            {
+                avatar.pos.y = newPos.y;
+            }
+        }
+        else if (getPixel(cursor.prevPos.x, cursor.prevPos.y)) // Pinching Pixels
+        {
+            switchMat(cursor.pos.x, cursor.pos.y, cursor.prevPos.x, cursor.prevPos.y,
+                      getPixel(cursor.pos.x, cursor.pos.y),
+                      getPixel(cursor.prevPos.x, cursor.prevPos.y));
+            // Marks the pinched pixel to ensure it does not update
+            cursor.pinchedPixel = IDX(cursor.pos.x, cursor.pos.y);
+        }
+    }
+    else if (cursor.pinching) // Set cursor to not pinching & release
+    {
+        clearCursor();
+        cursor.pinching = false;
+
+        if (avatar.spriteState == Avatar::Sprite::Hanging)
+            avatar.spriteState = Avatar::Sprite::Standing;
+
+        if (cursor.pinchedPixel < TOTAL_PIXELS)
+        {
+            pixelData.lastUpdate[cursor.pinchedPixel] = timing.frame;
+            pixelData.lastUpdateByRow[cursor.pinchedPixel / WIDTH] = timing.frame;
+            cursor.pinchedPixel = TOTAL_PIXELS;
+        }
     }
 
     // Get Current Key State
@@ -347,6 +458,8 @@ void handleInput()
         }
     }
 
-    // Set Previous Key State to Current Key State
+    // Reset status of whether the cursor was moved
+    cursor.movedThisFrame = false;
+    // Set previous key state to current key state
     keyState.prev = keyState.cur;
 }

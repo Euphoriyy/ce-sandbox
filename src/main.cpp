@@ -20,9 +20,11 @@ int main(void)
     for (uint24_t i = 0; i < GFX_LCD_WIDTH + SCALE_FACTOR; ++i)
         pixelData.divByScaleFactor[i] = i / SCALE_FACTOR;
 
-    // Set cursor size and position
+    // Set cursor's default state
     cursor.size = SCALE_FACTOR;
     cursor.pos = {WIDTH / 2, HEIGHT / 2};
+    // Indicates no pixel is currently pinched
+    cursor.pinchedPixel = TOTAL_PIXELS;
 
     // Mark selected points as unselected
     initSelectedPoints();

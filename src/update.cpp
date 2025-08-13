@@ -4,7 +4,7 @@ static inline void innerUpdateLoop(uint24_t rowIdx, uint8_t x, uint8_t y)
 {
     uint24_t idx = rowIdx + x;
     if (!pixelData.pixels[idx] || pixelData.updatedFlags[idx] ||
-        timing.frame - pixelData.lastUpdate[idx] >= 2)
+        timing.frame - pixelData.lastUpdate[idx] >= 2 || idx == cursor.pinchedPixel)
         return;
 
     uint8_t mat = getPixel(x, y);

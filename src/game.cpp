@@ -20,9 +20,14 @@ void initCursorSprites()
     cursor.sprites[0][0] = gfx_ConvertMallocRLETSprite(brush_cursor);
     cursor.sprites[1][0] = gfx_ConvertMallocRLETSprite(eraser_cursor);
     cursor.sprites[2][0] = gfx_ConvertMallocRLETSprite(hand_cursor);
+    cursor.sprites[3][0] = gfx_ConvertMallocRLETSprite(pinching_cursor);
     cursor.sprites[0][1] = gfx_ConvertMallocRLETSprite(largeBrush);
     cursor.sprites[1][1] = gfx_ConvertMallocRLETSprite(largeEraser);
     cursor.sprites[2][1] = gfx_ConvertMallocRLETSprite(largeHand);
+
+    // Reuse large hand sprite for large pinching cursor
+    gfx_ScaleSprite(pinching_cursor, largeHand);
+    cursor.sprites[3][1] = gfx_ConvertMallocRLETSprite(largeHand);
 }
 
 void initAvatarSprites()
@@ -30,16 +35,20 @@ void initAvatarSprites()
     gfx_TempSprite(flippedAvatar0, AVATAR_WIDTH, AVATAR_HEIGHT);
     gfx_TempSprite(flippedAvatar1, AVATAR_WIDTH, AVATAR_HEIGHT);
     gfx_TempSprite(flippedAvatar2, AVATAR_WIDTH, AVATAR_HEIGHT);
+    gfx_TempSprite(flippedAvatar3, AVATAR_WIDTH, AVATAR_HEIGHT);
     gfx_FlipSpriteY(avatar0, flippedAvatar0);
     gfx_FlipSpriteY(avatar1, flippedAvatar1);
     gfx_FlipSpriteY(avatar2, flippedAvatar2);
+    gfx_FlipSpriteY(avatar3, flippedAvatar3);
 
     avatar.sprites[0][0] = gfx_ConvertMallocRLETSprite(avatar0);
     avatar.sprites[1][0] = gfx_ConvertMallocRLETSprite(avatar1);
     avatar.sprites[2][0] = gfx_ConvertMallocRLETSprite(avatar2);
+    avatar.sprites[3][0] = gfx_ConvertMallocRLETSprite(avatar3);
     avatar.sprites[0][1] = gfx_ConvertMallocRLETSprite(flippedAvatar0);
     avatar.sprites[1][1] = gfx_ConvertMallocRLETSprite(flippedAvatar1);
     avatar.sprites[2][1] = gfx_ConvertMallocRLETSprite(flippedAvatar2);
+    avatar.sprites[3][1] = gfx_ConvertMallocRLETSprite(flippedAvatar3);
 }
 
 void resetAvatar()
@@ -216,4 +225,21 @@ void clearPointOutline(Vector2 pos)
     {
         pixelData.dirtyFlags[downIdx + 1] = true;
     }
+}
+
+bool cursorIntersectingAvatar()
+{
+    if (!avatar.spawned)
+        return false;
+
+    static Vector2 scaledAvatarDims = {pixelData.divByScaleFactor[AVATAR_WIDTH],
+                                       pixelData.divByScaleFactor[AVATAR_HEIGHT]};
+    Vector2 scaledAvatarPos = {pixelData.divByScaleFactor[avatar.pos.x],
+                               pixelData.divByScaleFactor[avatar.pos.y]};
+
+    bool xIntersecting = (cursor.pos.x > scaledAvatarPos.x - (SCALE_FACTOR >> 1) &&
+                          cursor.pos.x < scaledAvatarPos.x + scaledAvatarDims.x);
+    bool yIntersecting = (cursor.pos.y >= scaledAvatarPos.y - (SCALE_FACTOR >> 1) &&
+                          cursor.pos.y < scaledAvatarPos.y + scaledAvatarDims.y);
+    return xIntersecting && yIntersecting;
 }

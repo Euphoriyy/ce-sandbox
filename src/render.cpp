@@ -142,7 +142,8 @@ NONPIXEL_RENDERING:
 void drawAvatar()
 {
     gfx_rletsprite_t *sprite = avatar.sprites[avatar.spriteState][avatar.orientation];
-    gfx_RLETSprite(sprite, avatar.pos.x, avatar.pos.y);
+    uint8_t jitterOnHang = avatar.spriteState == Avatar::Sprite::Hanging && timing.frame & 3;
+    gfx_RLETSprite(sprite, avatar.pos.x + jitterOnHang, avatar.pos.y);
 }
 
 void drawPointOutline(Vector2 pos)
@@ -173,6 +174,7 @@ void drawCursor()
     }
 
     // Draw Sprite Cursor
+    // Assumes that both pinching & non-pinching hand cursors have the same size
     if (cursor.largeSprite)
     {
         if (gameState.isDrawing)
@@ -182,7 +184,7 @@ void drawCursor()
             gfx_RLETSprite(cursor.sprites[1][1], cursor.pos.x * cursor.size - 2,
                            cursor.pos.y * cursor.size - eraser_cursor_height + 2);
         else
-            gfx_RLETSprite(cursor.sprites[2][1], cursor.pos.x * cursor.size,
+            gfx_RLETSprite(cursor.sprites[cursor.pinching ? 3 : 2][1], cursor.pos.x * cursor.size,
                            cursor.pos.y * cursor.size - hand_cursor_height -
                                (hand_cursor_height - hand_cursor_width));
     }
@@ -195,7 +197,7 @@ void drawCursor()
             gfx_RLETSprite(cursor.sprites[1][0], cursor.pos.x * cursor.size,
                            cursor.pos.y * cursor.size);
         else
-            gfx_RLETSprite(cursor.sprites[2][0], cursor.pos.x * cursor.size,
+            gfx_RLETSprite(cursor.sprites[cursor.pinching ? 3 : 2][0], cursor.pos.x * cursor.size,
                            cursor.pos.y * cursor.size - (hand_cursor_height - hand_cursor_width));
     }
 }

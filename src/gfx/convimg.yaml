@@ -34,11 +34,13 @@ converts:
       - avatar0.png
       - avatar1.png
       - avatar2.png
+      - avatar3.png
       - brush_icon.png
       - eraser_icon.png
       - brush_cursor.png
       - eraser_cursor.png
       - hand_cursor.png
+      - pinching_cursor.png
 
 outputs:
   - type: c
