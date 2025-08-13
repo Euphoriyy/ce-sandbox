@@ -32,23 +32,14 @@ void initCursorSprites()
 
 void initAvatarSprites()
 {
-    gfx_TempSprite(flippedAvatar0, AVATAR_WIDTH, AVATAR_HEIGHT);
-    gfx_TempSprite(flippedAvatar1, AVATAR_WIDTH, AVATAR_HEIGHT);
-    gfx_TempSprite(flippedAvatar2, AVATAR_WIDTH, AVATAR_HEIGHT);
-    gfx_TempSprite(flippedAvatar3, AVATAR_WIDTH, AVATAR_HEIGHT);
-    gfx_FlipSpriteY(avatar0, flippedAvatar0);
-    gfx_FlipSpriteY(avatar1, flippedAvatar1);
-    gfx_FlipSpriteY(avatar2, flippedAvatar2);
-    gfx_FlipSpriteY(avatar3, flippedAvatar3);
-
-    avatar.sprites[0][0] = gfx_ConvertMallocRLETSprite(avatar0);
-    avatar.sprites[1][0] = gfx_ConvertMallocRLETSprite(avatar1);
-    avatar.sprites[2][0] = gfx_ConvertMallocRLETSprite(avatar2);
-    avatar.sprites[3][0] = gfx_ConvertMallocRLETSprite(avatar3);
-    avatar.sprites[0][1] = gfx_ConvertMallocRLETSprite(flippedAvatar0);
-    avatar.sprites[1][1] = gfx_ConvertMallocRLETSprite(flippedAvatar1);
-    avatar.sprites[2][1] = gfx_ConvertMallocRLETSprite(flippedAvatar2);
-    avatar.sprites[3][1] = gfx_ConvertMallocRLETSprite(flippedAvatar3);
+    avatar.sprites[0][0] = avatar0;
+    avatar.sprites[1][0] = avatar1;
+    avatar.sprites[2][0] = avatar2;
+    avatar.sprites[3][0] = avatar3;
+    avatar.sprites[0][1] = avatar0_flipped;
+    avatar.sprites[1][1] = avatar1_flipped;
+    avatar.sprites[2][1] = avatar2_flipped;
+    avatar.sprites[3][1] = avatar3_flipped;
 }
 
 void resetAvatar()

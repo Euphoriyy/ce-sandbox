@@ -27,20 +27,31 @@ palettes:
 converts:
   - name: sprites
     palette: global_palette
-    transparent-color-index: 0
     images:
-      - background_1.png
-      - title.png
-      - avatar0.png
-      - avatar1.png
-      - avatar2.png
-      - avatar3.png
-      - brush_icon.png
-      - eraser_icon.png
-      - brush_cursor.png
-      - eraser_cursor.png
-      - hand_cursor.png
-      - pinching_cursor.png
+      - title
+      - brush_cursor
+      - eraser_cursor
+      - hand_cursor
+      - pinching_cursor
+      - background_*
+  - name: rlet_sprites
+    palette: global_palette
+    style: rlet
+    images:
+      - brush_icon
+      - eraser_icon
+  - name: avatar
+    palette: global_palette
+    style: rlet
+    images:
+      - avatar*
+  - name: flipped_avatar
+    palette: global_palette
+    style: rlet
+    flip-y: true
+    suffix: _flipped
+    images:
+      - avatar*
 
 outputs:
   - type: c
@@ -49,4 +60,6 @@ outputs:
       - global_palette
     converts:
       - sprites
-
+      - rlet_sprites
+      - avatar
+      - flipped_avatar

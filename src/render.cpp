@@ -217,12 +217,12 @@ void drawGUI()
     if (gameState.isDrawing)
     {
         gfx_PrintString("DRAW");
-        gfx_TransparentSprite_NoClip(brush_icon, 45, 2);
+        gfx_RLETSprite_NoClip(brush_icon, 45, 2);
     }
     else if (gameState.isErasing)
     {
         gfx_PrintString("ERASE");
-        gfx_TransparentSprite_NoClip(eraser_icon, 53, 2);
+        gfx_RLETSprite_NoClip(eraser_icon, 53, 2);
     }
     else
         gfx_PrintString("IDLE");
