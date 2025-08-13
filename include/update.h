@@ -20,12 +20,11 @@
 inline void switchMat(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t mat0,
                       uint8_t mat1 = 0)
 {
-    setPixel(x0, y0, mat1);
     setPixel(x1, y1, mat0);
+    setPixel(x0, y0, mat1);
+
     if (!mat1)
-    {
         pixelData.updatedFlags[IDX(x1, y1)] = true;
-    }
 }
 
 void updateSand(uint8_t x, uint8_t y);
