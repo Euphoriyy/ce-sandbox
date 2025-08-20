@@ -1,6 +1,6 @@
 #include "../include/input.h"
 
-void handleInput()
+void handleInput(KeyState &keyState)
 {
     if (kb_IsDown(kb_KeyClear))
     {

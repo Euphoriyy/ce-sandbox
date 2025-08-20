@@ -48,10 +48,12 @@ int main(void)
     initCursorSprites();
     initAvatarSprites();
 
+    KeyState keyState;
+
     while (!kb_IsDown(kb_KeyMode))
     {
         kb_Scan();
-        handleInput();
+        handleInput(keyState);
 
         if (pixelData.activeCount && !gameState.isPaused)
         {

@@ -3,9 +3,8 @@
 Vector2_24 Avatar::defaultPos = {GFX_LCD_WIDTH / 2 - AVATAR_WIDTH / 2,
                                  GFX_LCD_HEIGHT - AVATAR_HEIGHT + 1};
 
-Cursor cursor;
-KeyState keyState;
 GameState gameState;
+Cursor cursor;
 Avatar avatar;
 
 void initCursorSprites()

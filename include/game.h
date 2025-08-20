@@ -3,15 +3,11 @@
 #include "math.h"
 #include "pixels.h"
 
-struct KeyState
+struct GameState
 {
-    struct Keys
-    {
-        bool enter = false, del = false, yequ = false, graph = false, second = false, zoom = false,
-             window = false, trace = false, graphVar = false, apps = false, sto = false, on = false,
-             ln = false, decPnt = false, power = false;
-    };
-    Keys prev, cur;
+    bool isDrawing = false, isErasing = false, isPaused = false, enableFloor = true,
+         circleBrush = true;
+    uint8_t brushSize = 1;
 };
 
 constexpr uint8_t MAX_SELECTED_POINTS = 2;
@@ -40,13 +36,6 @@ struct Cursor
     uint24_t pinchedPixel;
     Vector2 selectedPoints[MAX_SELECTED_POINTS];
     gfx_rletsprite_t *sprites[SpriteCount][SizeCount];
-};
-
-struct GameState
-{
-    bool isDrawing = false, isErasing = false, isPaused = false, enableFloor = true,
-         circleBrush = true;
-    uint8_t brushSize = 1;
 };
 
 const uint8_t AVATAR_WIDTH = 16, AVATAR_HEIGHT = 32;
@@ -123,9 +112,8 @@ const uint8_t PALETTE_LEN = sizeof(palette);
 
 inline bool isSolid(uint8_t mat) { return materialProperties[mat].stateOfMatter == Solid; }
 
-extern Cursor cursor;
-extern KeyState keyState;
 extern GameState gameState;
+extern Cursor cursor;
 extern Avatar avatar;
 
 void initCursorSprites();
