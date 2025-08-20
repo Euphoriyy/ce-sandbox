@@ -37,8 +37,10 @@ void render()
 
         for (uint8_t x = 0; x < WIDTH; ++x)
         {
+            uint24_t idx = rowIdx + x;
+
             // Do not draw if pixel is not flagged as dirty
-            if (!pixelData.dirtyFlags[rowIdx + x])
+            if (!pixelData.dirtyFlags[idx])
                 continue;
 
             uint8_t mat = getPixel(x, y);
@@ -67,6 +69,10 @@ void render()
                 bool yDivisible = (y * 0xAAAAAAABULL >> 33) * 3 == y;
                 uint8_t shadeIndex = ((yDivisible ? 2 : 1) & -(y & 1));
                 uint8_t shade = materialShades[mat][shadeIndex];
+                if (pixelData.colors[idx])
+                {
+                    shade = pixelData.colors[idx];
+                }
                 gfx_SetColor(shade ? shade : materialShades[mat][0]);
 
                 // Fill a single rectangle for the whole contiguous run
@@ -81,7 +87,7 @@ void render()
                     (x == WIDTH - 1 && SCALE_FACTOR != gcd(GFX_LCD_WIDTH, SCALE_FACTOR))
                         ? gcd(GFX_LCD_WIDTH, SCALE_FACTOR)
                         : 0;
-                uint8_t color = pixelData.bgColorCells[rowIdx + x];
+                uint8_t color = pixelData.bgColorCells[idx];
                 gfx_SetColor(color);
                 gfx_FillRectangle_NoClip(x * SCALE_FACTOR, scaledY, SCALE_FACTOR + xScaleOffset,
                                          SCALE_FACTOR + yScaleOffset);

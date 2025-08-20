@@ -18,10 +18,11 @@
 #define DOWN_RIGHT x + 1, y + 1
 
 inline void switchMat(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t mat0,
-                      uint8_t mat1 = 0)
+                      uint8_t mat1 = 0, uint8_t lifetime0 = 0xF, uint8_t lifetime1 = 0xF,
+                      uint8_t misc0 = 0, uint8_t misc1 = 0)
 {
-    setPixel(x1, y1, mat0);
-    setPixel(x0, y0, mat1);
+    setPixel(x1, y1, mat0, lifetime0, misc0);
+    setPixel(x0, y0, mat1, lifetime1, misc1);
 
     if (!mat1)
         pixelData.updatedFlags[IDX(x1, y1)] = true;

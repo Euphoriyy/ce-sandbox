@@ -15,7 +15,12 @@ const uint24_t TOTAL_PIXELS = WIDTH * HEIGHT;
 
 struct Pixels
 {
+    // Pixel materials
     uint8_t pixels[TOTAL_PIXELS] = {0};
+    // Specific per-pixel colors
+    uint8_t colors[TOTAL_PIXELS] = {0};
+    // Custom per-pixel properties, lower 4 bits for lifetime and upper 4 bits for misc.
+    uint8_t props[TOTAL_PIXELS] = {0};
     uint24_t activeCount = 0;
     bool activeRows[HEIGHT] = {0};
     bool dirtyFlags[TOTAL_PIXELS] = {0};
@@ -27,6 +32,9 @@ struct Pixels
     uint8_t divByScaleFactor[GFX_LCD_WIDTH + SCALE_FACTOR];
     uint8_t bgColorCells[TOTAL_PIXELS];
 };
+
+const uint8_t LIFETIME_MASK = 0x0F;
+const uint8_t MISC_MASK = 0xF0;
 
 extern Pixels pixelData;
 
@@ -45,7 +53,46 @@ inline uint8_t getPixel(uint8_t x, uint8_t y)
 
 inline uint8_t getPixel(uint24_t idx) { return IN_BOUNDS(idx) ? pixelData.pixels[idx] : 0; }
 
-inline void setPixel(uint8_t x, uint8_t y, uint8_t mat)
+inline uint8_t getColor(uint8_t x, uint8_t y)
+{
+    return IN_BOUNDS(x, y) ? pixelData.colors[IDX(x, y)] : 0;
+}
+
+inline uint8_t getColor(uint24_t idx) { return IN_BOUNDS(idx) ? pixelData.colors[idx] : 0; }
+
+inline uint8_t getLifetime(uint8_t x, uint8_t y)
+{
+    return IN_BOUNDS(x, y) ? pixelData.props[IDX(x, y)] & LIFETIME_MASK : 0;
+}
+
+inline uint8_t getLifetime(uint24_t idx)
+{
+    return IN_BOUNDS(idx) ? pixelData.props[idx] & LIFETIME_MASK : 0;
+}
+
+inline uint8_t getMisc(uint8_t x, uint8_t y)
+{
+    return IN_BOUNDS(x, y) ? (pixelData.props[IDX(x, y)] & MISC_MASK) >> 4 : 0;
+}
+
+inline uint8_t getMisc(uint24_t idx)
+{
+    return IN_BOUNDS(idx) ? (pixelData.props[idx] & MISC_MASK) >> 4 : 0;
+}
+
+inline void setLifetime(uint24_t idx, uint8_t lifetime)
+{
+    pixelData.props[idx] &= ~LIFETIME_MASK;
+    pixelData.props[idx] |= lifetime & LIFETIME_MASK;
+}
+
+inline void setMisc(uint24_t idx, uint8_t misc)
+{
+    pixelData.props[idx] &= ~MISC_MASK;
+    pixelData.props[idx] |= (misc & MISC_MASK) >> 4;
+}
+
+inline void setPixel(uint8_t x, uint8_t y, uint8_t mat, uint8_t lifetime = 0xF, uint8_t misc = 0)
 {
     if (!IN_BOUNDS(x, y))
         return;
@@ -65,9 +112,15 @@ inline void setPixel(uint8_t x, uint8_t y, uint8_t mat)
             memset(pixelData.dirtyFlags, 1, TOTAL_PIXELS);
             memset(pixelData.dirtyRows, 1, HEIGHT);
         }
+        setLifetime(idx, lifetime);
+        setMisc(idx, misc);
     }
     else if (prevMat && !mat)
+    {
         --pixelData.activeCount; // Decrement active count if it is zero
+        pixelData.colors[idx] = 0;
+        pixelData.props[idx] = 0;
+    }
 
     // Change the material and mark pixel as dirty
     pixelData.pixels[idx] = mat;

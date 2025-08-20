@@ -5,6 +5,8 @@ void handleInput()
     if (kb_IsDown(kb_KeyClear))
     {
         memset(pixelData.pixels, 0, TOTAL_PIXELS);
+        memset(pixelData.colors, 0, TOTAL_PIXELS);
+        memset(pixelData.props, 0, TOTAL_PIXELS);
         memset(pixelData.activeRows, 0, HEIGHT);
         memset(pixelData.dirtyFlags, 0, TOTAL_PIXELS);
         memset(pixelData.dirtyRows, 0, HEIGHT);
