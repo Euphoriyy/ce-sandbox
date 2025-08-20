@@ -335,11 +335,11 @@ void handleInput()
         if (cursor.paletteIndex > 0)
             --cursor.paletteIndex;
         else
-            cursor.paletteIndex = paletteLen - 1;
+            cursor.paletteIndex = PALETTE_LEN - 1;
     }
     else if (keyState.cur.graph && !keyState.prev.graph)
     {
-        if (cursor.paletteIndex < paletteLen - 1)
+        if (cursor.paletteIndex < PALETTE_LEN - 1)
             ++cursor.paletteIndex;
         else
             cursor.paletteIndex = 0;
@@ -406,7 +406,7 @@ void handleInput()
         uint8_t mat = pixelData.pixels[IDX(cursor.pos.x, cursor.pos.y)];
         if (mat)
         {
-            for (uint8_t i = 0; i < paletteLen; ++i)
+            for (uint8_t i = 0; i < PALETTE_LEN; ++i)
             {
                 if (palette[i] == mat)
                     cursor.paletteIndex = i;

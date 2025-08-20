@@ -79,6 +79,19 @@ struct Avatar
     gfx_rletsprite_t *sprites[SpriteCount][OrientationCount];
 };
 
+enum MatterState
+{
+    Solid,
+    Liquid,
+    Gas
+};
+
+struct MaterialProperties
+{
+    const char name[7];
+    MatterState stateOfMatter;
+};
+
 enum Material
 {
     Empty,
@@ -89,19 +102,22 @@ enum Material
     Acid,
     Steam,
     Wood,
+    MaterialCount
 };
 
-const uint8_t shadeCount = 3;
-constexpr uint8_t materialShades[][shadeCount] = {{0, 1},     {2, 1, 0},    {5, 4, 3},   {6, 7, 8},
-                                                  {9, 0, 10}, {11, 12, 13}, {14, 15, 0}, {16, 17}};
+const MaterialProperties materialProperties[MaterialCount] = {
+    {"AIR", Gas},     {"SAND", Solid},  {"WATER", Liquid}, {"DIRT", Solid},
+    {"STONE", Solid}, {"ACID", Liquid}, {"STEAM", Gas},    {"WOOD", Solid}};
+
+const uint8_t SHADE_COUNT = 3;
+constexpr uint8_t materialShades[MaterialCount][SHADE_COUNT] = {
+    {0, 1}, {2, 1, 0}, {5, 4, 3}, {6, 7, 8}, {9, 0, 10}, {11, 12, 13}, {14, 15, 0}, {16, 17, 0}};
+
 const uint8_t palette[] = {Material::Sand, Material::Water, Material::Dirt, Material::Stone,
                            Material::Wood, Material::Acid,  Material::Steam};
-const uint8_t paletteLen = sizeof(palette);
+const uint8_t PALETTE_LEN = sizeof(palette);
 
-inline bool isSolid(uint8_t mat)
-{
-    return mat != Material::Water && mat != Material::Acid && mat != Material::Steam;
-}
+inline bool isSolid(uint8_t mat) { return materialProperties[mat].stateOfMatter == Solid; }
 
 extern Cursor cursor;
 extern KeyState keyState;

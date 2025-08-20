@@ -253,32 +253,9 @@ void drawGUI()
         gfx_SetColor(materialShades[palette[cursor.paletteIndex]][0]);
         gfx_FillRectangle_NoClip(73, 3, 6, 6);
     }
+    
     gfx_SetTextXY(82, 3);
-
-    switch (palette[cursor.paletteIndex])
-    {
-        case Material::Sand:
-            gfx_PrintString("SAND");
-            break;
-        case Material::Water:
-            gfx_PrintString("WATER");
-            break;
-        case Material::Stone:
-            gfx_PrintString("STONE");
-            break;
-        case Material::Wood:
-            gfx_PrintString("WOOD");
-            break;
-        case Material::Dirt:
-            gfx_PrintString("DIRT");
-            break;
-        case Material::Acid:
-            gfx_PrintString("ACID");
-            break;
-        case Material::Steam:
-            gfx_PrintString("STEAM");
-            break;
-    }
+    gfx_PrintString(materialProperties[palette[cursor.paletteIndex]].name);
 
     gfx_PrintStringXY("SZ:", 135, 3);
     gfx_SetTextXY(161, 3);
