@@ -3,6 +3,7 @@
 static inline void innerUpdateLoop(uint24_t rowIdx, uint8_t x, uint8_t y)
 {
     uint24_t idx = rowIdx + x;
+
     if (!pixelData.pixels[idx] || pixelData.updatedFlags[idx] ||
         timing.frame - pixelData.lastUpdate[idx] >= 2 || idx == cursor.pinchedPixel)
         return;
@@ -27,6 +28,9 @@ static inline void innerUpdateLoop(uint24_t rowIdx, uint8_t x, uint8_t y)
             break;
         case Material::Steam:
             updateSteam(x, y);
+            break;
+        case Material::Fire:
+            updateFire(x, y);
             break;
     }
 }
@@ -324,6 +328,91 @@ void updateSteam(uint8_t x, uint8_t y)
         {
             switchMat(CUR_POS, LEFT, Material::Steam);
             return;
+        }
+    }
+}
+
+void updateFire(uint8_t x, uint8_t y)
+{
+    if (y == 0)
+        setPixel(CUR_POS, Material::Empty);
+
+    uint8_t lifetime = getLifetime(CUR_POS);
+
+    // Burned out
+    if (lifetime == 0)
+    {
+        setPixel(CUR_POS, Material::Empty);
+        return;
+    }
+
+    // Update lifetime
+    --lifetime;
+
+    // Try to rise
+    if (!getPixel(UP))
+    {
+        switchMat(CUR_POS, UP, Material::Fire, 0, lifetime);
+        return;
+    }
+    if (x > 0 && !getPixel(UP_LEFT))
+    {
+        switchMat(CUR_POS, UP_LEFT, Material::Fire, 0, lifetime);
+        return;
+    }
+    if (x + 1 < WIDTH && !getPixel(UP_RIGHT))
+    {
+        switchMat(CUR_POS, UP_RIGHT, Material::Fire, 0, lifetime);
+        return;
+    }
+
+    // Try to spread sideways
+    bool leftFirst = y & 1;
+
+    if (leftFirst)
+    {
+        if (x > 0 && !getPixel(LEFT))
+        {
+            switchMat(CUR_POS, LEFT, Material::Fire, 0, lifetime);
+            return;
+        }
+        else if (x + 1 < WIDTH && !getPixel(RIGHT))
+        {
+            switchMat(CUR_POS, RIGHT, Material::Fire, 0, lifetime);
+            return;
+        }
+    }
+    else
+    {
+        if (x + 1 < WIDTH && !getPixel(RIGHT))
+        {
+            switchMat(CUR_POS, RIGHT, Material::Fire, 0, lifetime);
+            return;
+        }
+        else if (x > 0 && !getPixel(LEFT))
+        {
+            switchMat(CUR_POS, LEFT, Material::Fire, 0, lifetime);
+            return;
+        }
+    }
+
+    // Ignite flammable neighbors
+    static const int8_t offsets[4][2] = {{0, -1}, {-1, 0}, {1, 0}, {0, 1}};
+    for (uint8_t i = 0; i < 4; i++)
+    {
+        int nx = x + offsets[i][0];
+        int ny = y + offsets[i][1];
+        if (nx < 0 || nx >= WIDTH || ny < 0 || ny >= HEIGHT)
+            continue;
+
+        uint8_t neighbor = getPixel(nx, ny);
+        if (materialProperties[neighbor].isFlammable)
+        {
+            setPixel(nx, ny, Material::Fire, randInt(3, 10)); // Random lifetime 3-10
+        }
+        else if (neighbor == Material::Water)
+        {
+            setPixel(nx, ny, Material::Steam);
         }
     }
 }

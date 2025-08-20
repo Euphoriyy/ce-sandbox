@@ -90,6 +90,7 @@ struct MaterialProperties
 {
     const char name[7];
     MatterState stateOfMatter;
+    bool isFlammable = false;
 };
 
 enum Material
@@ -102,19 +103,22 @@ enum Material
     Acid,
     Steam,
     Wood,
+    Fire,
     MaterialCount
 };
 
 const MaterialProperties materialProperties[MaterialCount] = {
-    {"AIR", Gas},     {"SAND", Solid},  {"WATER", Liquid}, {"DIRT", Solid},
-    {"STONE", Solid}, {"ACID", Liquid}, {"STEAM", Gas},    {"WOOD", Solid}};
+    {"AIR", Gas, false},    {"SAND", Solid, false},  {"WATER", Liquid, false},
+    {"DIRT", Solid, false}, {"STONE", Solid, false}, {"ACID", Liquid, false},
+    {"STEAM", Gas, false},  {"WOOD", Solid, true},   {"FIRE", Gas, false}};
 
 const uint8_t SHADE_COUNT = 3;
 constexpr uint8_t materialShades[MaterialCount][SHADE_COUNT] = {
-    {0, 1}, {2, 1, 0}, {5, 4, 3}, {6, 7, 8}, {9, 0, 10}, {11, 12, 13}, {14, 15, 0}, {16, 17, 0}};
+    {0, 1},       {2, 1, 0},   {5, 4, 3},   {6, 7, 8},   {9, 0, 10},
+    {11, 12, 13}, {14, 15, 0}, {16, 17, 0}, {18, 19, 20}};
 
-const uint8_t palette[] = {Material::Sand, Material::Water, Material::Dirt, Material::Stone,
-                           Material::Wood, Material::Acid,  Material::Steam};
+const uint8_t palette[] = {Material::Sand, Material::Water, Material::Dirt,  Material::Stone,
+                           Material::Wood, Material::Acid,  Material::Steam, Material::Fire};
 const uint8_t PALETTE_LEN = sizeof(palette);
 
 inline bool isSolid(uint8_t mat) { return materialProperties[mat].stateOfMatter == Solid; }

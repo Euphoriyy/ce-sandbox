@@ -34,5 +34,6 @@ void updateDirt(uint8_t x, uint8_t y);
 void updateStone(uint8_t x, uint8_t y);
 void updateAcid(uint8_t x, uint8_t y);
 void updateSteam(uint8_t x, uint8_t y);
+void updateFire(uint8_t x, uint8_t y);
 void updateAvatarVerticalPos();
 void update();
