@@ -1,5 +1,14 @@
 #include "../include/input.h"
 
+#include "../include/draw.h"
+#include "../include/pixels.h"
+#include "../include/saves.h"
+#include "../include/update.h"
+#include "gfx/pinching_cursor.h"
+
+#include <keypadc.h>
+#include <string.h>
+
 void handleInput(KeyState &keyState)
 {
     if (kb_IsDown(kb_KeyClear))

@@ -1,11 +1,13 @@
-#include <sys/rtc.h>
-#include <sys/timers.h>
-
 #include "../include/game.h"
 #include "../include/input.h"
 #include "../include/pixels.h"
 #include "../include/render.h"
 #include "../include/update.h"
+#include "gfx/global_palette.h"
+
+#include <keypadc.h>
+#include <sys/rtc.h>
+#include <sys/timers.h>
 
 int main(void)
 {

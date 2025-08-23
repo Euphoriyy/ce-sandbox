@@ -1,5 +1,10 @@
 #include "../include/saves.h"
 
+#include "../include/pixels.h"
+
+#include <fileioc.h>
+#include <string.h>
+
 void writeSave(const char *saveName)
 {
     uint8_t appVarHandle = ti_Open(saveName, "w");

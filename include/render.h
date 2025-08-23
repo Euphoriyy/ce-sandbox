@@ -1,9 +1,6 @@
 #pragma once
 
-#include <graphx.h>
-#include <keypadc.h>
-
-#include "pixels.h"
+#include "math.h"
 
 void mainMenu();
 void precomputeBgColors();

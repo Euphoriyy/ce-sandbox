@@ -1,9 +1,8 @@
 #pragma once
 
-#include <cstdint>
-#include <sys/util.h>
-
 #include "pixels.h"
+
+#include <cstdint>
 
 #define CUR_POS x, y
 

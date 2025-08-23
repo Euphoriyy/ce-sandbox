@@ -1,5 +1,7 @@
 #include "../include/update.h"
 
+#include <sys/util.h>
+
 static inline void innerUpdateLoop(uint24_t rowIdx, uint8_t x, uint8_t y)
 {
     uint24_t idx = rowIdx + x;
@@ -76,7 +78,6 @@ void updateAvatarVerticalPos()
     // Lift avatar if intersecting a solid material
     uint8_t nonintersectingCount = 0;
     for (uint8_t y = avatar.pos.y; y > GUI_HEIGHT; --y)
-
     {
         uint8_t scaledY = pixelData.divByScaleFactor[y + HALF_OF_AVATAR_HEIGHT + 4];
         uint8_t intersectingMat = pixelData.activeRows[scaledY] ? getPixel(scaledX, scaledY) : 0;

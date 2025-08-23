@@ -1,5 +1,8 @@
 #include "../include/game.h"
 
+#include "../include/pixels.h"
+#include "gfx/gfx.h"
+
 Vector2_24 Avatar::defaultPos = {GFX_LCD_WIDTH / 2 - AVATAR_WIDTH / 2,
                                  GFX_LCD_HEIGHT - AVATAR_HEIGHT + 1};
 

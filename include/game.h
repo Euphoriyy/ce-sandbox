@@ -1,7 +1,8 @@
 #pragma once
 
 #include "math.h"
-#include "pixels.h"
+
+#include <graphx.h>
 
 struct GameState
 {

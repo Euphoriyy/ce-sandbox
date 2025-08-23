@@ -1,11 +1,10 @@
 #pragma once
 
+#include "game.h"
+#include "timing.h"
+
 #include <graphx.h>
 #include <string.h>
-
-#include "game.h"
-#include "gfx/gfx.h"
-#include "timing.h"
 
 const uint8_t GUI_HEIGHT = 12;
 const uint8_t SCALE_FACTOR = 5;

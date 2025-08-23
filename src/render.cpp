@@ -1,5 +1,11 @@
 #include "../include/render.h"
 
+#include "../include/pixels.h"
+#include "gfx/gfx.h"
+
+#include <graphx.h>
+#include <keypadc.h>
+
 constexpr bool isImageBackground() { return materialShades[0][1]; }
 constexpr bool isBlackBackground() { return !materialShades[0][0]; }
 
@@ -253,7 +259,7 @@ void drawGUI()
         gfx_SetColor(materialShades[palette[cursor.paletteIndex]][0]);
         gfx_FillRectangle_NoClip(73, 3, 6, 6);
     }
-    
+
     gfx_SetTextXY(82, 3);
     gfx_PrintString(materialProperties[palette[cursor.paletteIndex]].name);
 
