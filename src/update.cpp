@@ -401,8 +401,8 @@ void updateFire(uint8_t x, uint8_t y)
     static const int8_t offsets[4][2] = {{0, -1}, {-1, 0}, {1, 0}, {0, 1}};
     for (uint8_t i = 0; i < 4; i++)
     {
-        int nx = x + offsets[i][0];
-        int ny = y + offsets[i][1];
+        int8_t nx = x + offsets[i][0];
+        int8_t ny = y + offsets[i][1];
         if (nx < 0 || nx >= WIDTH || ny < 0 || ny >= HEIGHT)
             continue;
 
