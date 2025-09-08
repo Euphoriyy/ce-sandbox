@@ -1,4 +1,4 @@
 #pragma once
 
-void writeSave(const char *saveName);
-void loadSave(const char *saveName);
+bool writeSave(const char *saveName);
+bool loadSave(const char *saveName);
